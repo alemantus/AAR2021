@@ -42,6 +42,11 @@ poseW = transform(carth, x, y, theta);
 points(1,:) =  linspace(5,5,500);
 points(2,:) = linspace(-8,3,500);
 
+points2(1,:) =  linspace(-8,3,500);
+points2(2,:) = linspace(3,3,500);
+
+points3(1,:) =  linspace(5,5,500);
+points3(2,:) = linspace(-8,3,500);
 
 %Estemating lines
 lineSee = lsqline(points);
