@@ -70,6 +70,10 @@ lineSee = lsqline(points1);
 lineSee2 = lsqline(points2);
 lineSee3 = lsqline(points3);
 
+%Task 7_8    
+Alpha_w = lineSee(1)-theta;
+
+
 
 
 figure
