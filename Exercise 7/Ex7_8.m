@@ -67,12 +67,26 @@ points3(2,:) = linspace(-1.85243,-1.1547,500);
 
 
 
+
+
+
+
 %Estemating lines 
 lineSee = lsqline(points1);
 lineSee2 = lsqline(points2);
 lineSee3 = lsqline(points3);
 
+lineSeeW = lineSee;
 
+lineSeeW(1) = lineSee(1)+theta;
+
+polar2carth(lineSee')
+
+lineWORLD = transform(polar2carth(lineSee'), x, y, theta)
+
+rW=(lineWORLD(1)^2+lineWORLD(2)^2)^0.5
+
+alpha=lineWORLD(3)
 
 figure
 plot(carth(1,:),carth(2,:))
