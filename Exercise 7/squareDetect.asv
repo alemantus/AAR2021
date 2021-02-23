@@ -53,24 +53,7 @@ line1 = lsqline(points1);
 line2 = lsqline(points2);
 
 
-length1 = sqrt((x(startIndex)-x(cornerIndex))^2 + (y(startIndex)-y(cornerIndex))^2);
-length2 = sqrt((x(endIndex)-x(cornerIndex))^2 + (y(endIndex)-y(cornerIndex))^2);
-
-if length1 > length2
-   
-    theta = line1(1)-pi/2;
-    
-    
-else
-    theta = line2(1)-pi/2;
-    
-end
-
-%Center of square?
-
-
-xcenter=(x(startIndex)+x(endIndex))/2
-ycenter=(y(endIndex)+y(startIndex))/2
+dist1 = sqrt((x(startIndex)-x(cornerIndex))^2 + (y(startIndex)-y(cornerIndex))^2)
 
 
 %L = length(pol(1,:))
