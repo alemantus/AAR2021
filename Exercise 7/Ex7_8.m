@@ -76,17 +76,30 @@ lineSee = lsqline(points1);
 lineSee2 = lsqline(points2);
 lineSee3 = lsqline(points3);
 
-lineSeeW = lineSee;
-
-lineSeeW(1) = lineSee(1)+theta;
-
-polar2carth(lineSee')
+%polar2carth(lineSee')
 
 lineWORLD = transform(polar2carth(lineSee'), x, y, theta)
 
 rW=(lineWORLD(1)^2+lineWORLD(2)^2)^0.5
 
 alpha=lineWORLD(3)
+
+
+lineWORLD2 = transform(polar2carth(lineSee2'), x, y, theta)
+
+rW2=(lineWORLD2(1)^2+lineWORLD2(2)^2)^0.5
+
+alpha2=lineWORLD2(3)
+
+
+lineWORLD3 = transform(polar2carth(lineSee3'), x, y, theta)
+
+rW3=(lineWORLD3(1)^2+lineWORLD3(2)^2)^0.5
+
+alpha3=lineWORLD3(3)
+
+
+
 
 figure
 plot(carth(1,:),carth(2,:))
@@ -97,6 +110,14 @@ line([lines(1,4) lines(3,4)],[lines(2,4) lines(4,4)],'linestyle','--','Color','g
 xlim([-1 5])
 ylim([-5 5])
 
+legend('Laser coordinates','World coordinates')
+
+
+
+ylabel('y-direction [m]')
+xlabel('x-direction [m]')
+
+
 figure
 plot(poseW(1,:),poseW(2,:))
 line([lines(1,1) lines(3,1)],[lines(2,1) lines(4,1)],'linestyle','--','Color','green');
@@ -105,6 +126,10 @@ line([lines(1,3) lines(3,3)],[lines(2,3) lines(4,3)],'linestyle','--','Color','g
 line([lines(1,4) lines(3,4)],[lines(2,4) lines(4,4)],'linestyle','--','Color','green');
 xlim([-1 5])
 ylim([-5 5])
+legend('Laser coordinates','World coordinates')
+ylabel('y-direction [m]')
+xlabel('x-direction [m]')
+
 
 % %Plot of lines from world pose
 % subplot(2,2,1)

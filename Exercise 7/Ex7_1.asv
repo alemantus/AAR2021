@@ -1,15 +1,15 @@
 close all; clear; clc;
 
 %Defining line with start (3,-4) and end (3,1) 
-lines(1,1) = 4;
+lines(1,1) = 3;
 lines(2,1) = -4;
-lines(3,1) = 1;
+lines(3,1) = 2;
 lines(4,1) = 1;
 
-lines(1,2) = 1;
-lines(2,2) = 1;
-lines(3,2) = 1.5;
-lines(4,2) = 4;
+lines(1,1) = 3;
+lines(2,1) = -4;
+lines(3,1) = 2;
+lines(4,1) = 1;
 
 
 %Scanner pose
