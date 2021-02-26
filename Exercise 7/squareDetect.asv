@@ -6,9 +6,6 @@ y = poseW(2,:);
 %maxlength = 4;
 dist=pol(2,:);
 
-i=0;
-startIndex = 0;
-endIndex = 0;
 for i = 1:length(dist)
     
     if dist(i) < maxlength
@@ -36,7 +33,6 @@ dist(dist>=maxlength)=NaN;
 
 gdd=diff(imgaussfilt(dist,1),2);
 
-cornerIndex = 0;
 [m, cornerIndex] = max(gdd);
 
 
@@ -48,9 +44,9 @@ cornerIndex = 0;
 %y=y(Index);
 
 
-points1 = [x(startIndex:cornerIndex(1)); y(startIndex:cornerIndex(1))];
+points1 = [x(startIndex:cornerIndex); y(startIndex:cornerIndex)]
 
-points2 = [x(cornerIndex(1):endIndex); y(cornerIndex(1):endIndex)];
+points2 = [x(cornerIndex:endIndex); y(cornerIndex:endIndex)]
 
 line1 = lsqline(points1);
 
