@@ -1,7 +1,7 @@
 close all; clear; clc;
 
 %Orientation of box:
-th = 90;
+th = 10;
 
 %Placement of center:
 x_c = 0.3;
@@ -88,7 +88,7 @@ line([lines(1,3) lines(3,3)],[lines(2,3) lines(4,3)],'linestyle','-','Color','gr
 line([lines(1,4) lines(3,4)],[lines(2,4) lines(4,4)],'linestyle','-','Color','green');
 scatter(poseSquare(1),poseSquare(2))
 
-legend('Laser coordinates','World coordinates', '', '', '', 'Center of square')
+legend('Laser coordinates','World coordinates', 'Center of square', )
 ylabel('y-direction [m]')
 xlabel('x-direction [m]')
 
@@ -97,6 +97,6 @@ xlabel('x-direction [m]')
 %ylim([-4 4])
 
 
-xlim([0 maxDistance])
-ylim([0 maxDistance])
+xlim([0 1.2])
+ylim([0 1.2])
 hold off
