@@ -1,14 +1,13 @@
-%function square = squareDetect(pol)
-
+function square = squareDetect(pol, poseW, maxlength)
 
 x= poseW(1,:)
 y = poseW(2,:)
-
+%maxlength = 4;
 dist=pol(2,:);
 
 for i = 1:length(dist)
     
-    if dist(i) < 1.2
+    if dist(i) < maxlength
         startIndex = i;
         break;
     end
@@ -18,7 +17,7 @@ end
 
 for i = length(dist):-1:1
     
-    if dist(i) < 1.2
+    if dist(i) < maxlength
         endIndex = i;
         break;
     end
@@ -27,9 +26,9 @@ end
 
 
 
-x(dist >= 1.2) = NaN;
-y(dist >= 1.2) = NaN;
-dist(dist>=1.2)=NaN
+x(dist >= maxlength) = NaN;
+y(dist >= maxlength) = NaN;
+dist(dist>=maxlength)=NaN;
 
 gdd=diff(imgaussfilt(dist,1),2);
 
@@ -66,34 +65,12 @@ else
     
 end
 
-%Center of square?
+
+xcenter=(x(startIndex)+x(endIndex))/2;
+ycenter=(y(endIndex)+y(startIndex))/2;
 
 
-xcenter=(x(startIndex)+x(endIndex))/2
-ycenter=(y(endIndex)+y(startIndex))/2
-
-
-%L = length(pol(1,:))
-
-%x = 0:1/L:L;
-%g = gaussmf(x,[L*0.1 L*0.3]);
-%y= conv(pol(2,:), g);
-
-
-%gd = diff(g);
-
-
-
-
-
-figure
-plot(pol(2,:))
-
-figure
-
-plot(x,y)
-
-
+square = [xcenter ycenter theta];
 
 
 

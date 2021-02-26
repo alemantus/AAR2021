@@ -74,11 +74,23 @@ carth = polar2carth(pol);
 %Transforming laser to global
 poseW = transform(carth, x, y, theta);
 
+%Estimate square position
+poseSquare = squareDetect(pol, poseW, maxDistance);
+
+
+
 figure
+hold on
 plot(poseW(1,:),poseW(2,:))
 line([lines(1,1) lines(3,1)],[lines(2,1) lines(4,1)],'linestyle','-','Color','green');
 line([lines(1,2) lines(3,2)],[lines(2,2) lines(4,2)],'linestyle','-','Color','green');
 line([lines(1,3) lines(3,3)],[lines(2,3) lines(4,3)],'linestyle','-','Color','green');
 line([lines(1,4) lines(3,4)],[lines(2,4) lines(4,4)],'linestyle','-','Color','green');
+scatter(poseSquare(1),poseSquare(2))
+%xlim([-4 4])
+%ylim([-4 4])
+
+
 xlim([0 1.2])
 ylim([0 1.2])
+hold off
