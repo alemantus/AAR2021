@@ -1,0 +1,49 @@
+%Implementing feedback algorithm for point to point
+
+log "$odox" "$odoy" "$odoth"
+
+%Robot parameters
+w = 0.26
+r = 0.035
+
+%Final pose
+X = 0.5 
+Y = 0.5
+theta = 3.14/2
+
+%Controller parameters
+k1 =  0.3
+k2 = 0.8
+k3 = -0.35
+
+%Rho and alpha init
+rho = 1
+alpha = 1
+
+%Condition for looping
+label "back"
+if(rho>0.01 | alpha>0.02) "program"
+stop
+
+
+%Program execution
+label "program"
+invtrans X Y theta $odox $odoy $odoth
+deltaX = -$res0
+deltaY = -$res1
+deltaTheta = $res2
+rho = sqrt((deltaX*deltaX)+(deltaY*deltaY))
+alpha = -deltaTheta + atan2(deltaY,deltaX)
+beta = -deltaTheta - alpha
+v = k1*rho
+if (v < 0.005) "setSpeedZero"
+label "backInProgram"
+omega = k2*alpha + k3*beta
+speedR = (v + omega*w*0.5)
+speedL = (v - omega*w*0.5)
+motorcmds speedL speedR
+goto "back"
+
+label "setSpeedZero"
+v = 0
+stop
