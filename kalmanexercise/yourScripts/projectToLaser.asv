@@ -19,10 +19,18 @@ global lsrRelPose % The laser scanner pose in the robot frame is read globally
 alpha_r = worldLine(1)-poseIn(3);
 r_r = worldLine(2)-poseIn(1)*cos(worldLine(1))-poseIn(2)*sin(worldLine(1));
 
-alpha_l = alpha_r-lsrRelPose(3);
-r_l = r_r-lsrRelPose(1)*cos(alpha_r)-lsrRelPose(2)*sin(alpha_r);
+x_r = r_r*cos(alpha_r);
+y_r = r_r*sin(alpha_r);
+th_r = atan2(y_r,x_r);
 
-projectedLine = [alpha_l r_l];
+res = zeros(3,1);
+[res(1); res(2)] = [cos(th_r) -sin(th_r); sin(th_r cos(th_r)]* 
+
+
+
+%Robot to laser pose
+
+%projectedLine = [0,0];
 
 lineCov = zeros(2,2);
 end

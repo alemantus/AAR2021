@@ -10,8 +10,8 @@ worldLines =convertToPolar(lines); % The lines in the (alpha, rho) parameterizat
 %% Real Robot constants
 global odoB kR kL
 odoB = 0.3; % The separation between the two wheels
-kR = 0.0001; % The variance of the linear uncertainty for a 1m move for the right wheel
-kL = 0.0001; % The variance of the linear uncertainty for a 1m move for the left wheel
+kR = 0.000; % The variance of the linear uncertainty for a 1m move for the right wheel
+kL = 0.000; % The variance of the linear uncertainty for a 1m move for the left wheel
 smrNo=0;
 %% Kalman filter Robot constants
 global odoB_kf kR_kf kL_kf
@@ -21,13 +21,13 @@ kL_kf = 0.0001; % The variance of the linear uncertainty for a 1m move for the l
 
 %% Simulation constants
 global ts robotLinearSpeed robotAngularSpeed robotPathWidth robotPathRadius trackNo
-noOfIter = 2000; %The number of simulation iterations
+noOfIter = 300; %The number of simulation iterations
 ts = 0.01; %The time period of each iteration
 plotNth = 100; %Plot the pose data every nth iteration
 plotNthEllipsoid = 100; %Plot a gaussian ellipsoid for every nth pose
 simulation=true;
 %% Path constants
-trackNo = 3; %The path followed by the robot, 1: line, 2: circle, 3: square
+trackNo = 1; %The path followed by the robot, 1: line, 2: circle, 3: square
 robotLinearSpeed = 0.3; %The linear speed of the robot for path segments that it is moving forward
 robotAngularSpeed = 1; %The angular speed of the robot fot path segments that it is turning
 robotPathWidth = squareWidth - 0.6; % For the square path, the width of the square
@@ -42,7 +42,7 @@ lsrRelRot = [cos(lsrRelPose(3)) sin(lsrRelPose(3)); -sin(lsrRelPose(3)) cos(lsrR
 varAlpha = 0.001; %The assumed variance on the orientation of a line extracted from the laser scanner
 varR = 0.0004; %%The assumed variance on the distance of a line extracted from the laser scanner
 
-plotLaserDataWithPredictedLines = false;
+plotLaserDataWithPredictedLines = true;
 plotExtractedLines = false;
 plotLineParameters = false;
 
