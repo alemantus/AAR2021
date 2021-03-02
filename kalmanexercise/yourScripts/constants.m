@@ -10,9 +10,9 @@ worldLines =convertToPolar(lines); % The lines in the (alpha, rho) parameterizat
 %% Real Robot constants
 global odoB kR kL
 odoB = 0.3; % The separation between the two wheels
-kR = 0.0000; % The variance of the linear uncertainty for a 1m move for the right wheel
-kL = 0.0000; % The variance of the linear uncertainty for a 1m move for the left wheel
-smrNo=0
+kR = 0.0001; % The variance of the linear uncertainty for a 1m move for the right wheel
+kL = 0.0001; % The variance of the linear uncertainty for a 1m move for the left wheel
+smrNo=0;
 %% Kalman filter Robot constants
 global odoB_kf kR_kf kL_kf
 odoB_kf = 0.3; % The separation between the two wheels
