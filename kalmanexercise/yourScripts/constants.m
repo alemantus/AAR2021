@@ -27,7 +27,7 @@ plotNth = 100; %Plot the pose data every nth iteration
 plotNthEllipsoid = 100; %Plot a gaussian ellipsoid for every nth pose
 simulation=true;
 %% Path constants
-trackNo = 1; %The path followed by the robot, 1: line, 2: circle, 3: square
+trackNo = 2; %The path followed by the robot, 1: line, 2: circle, 3: square
 robotLinearSpeed = 0.3; %The linear speed of the robot for path segments that it is moving forward
 robotAngularSpeed = 1; %The angular speed of the robot fot path segments that it is turning
 robotPathWidth = squareWidth - 0.6; % For the square path, the width of the square
@@ -43,7 +43,7 @@ varAlpha = 0.001; %The assumed variance on the orientation of a line extracted f
 varR = 0.0004; %%The assumed variance on the distance of a line extracted from the laser scanner
 
 plotLaserDataWithPredictedLines = true;
-plotExtractedLines = false;
+plotExtractedLines = true;
 plotLineParameters = false;
 
 plotMatchedLines = false;
