@@ -14,6 +14,7 @@ global odoB kR kL
 delS = (delSr+delSl)/2;
 delT = (delSr-delSl)/odoB;
 %% pose update
+%Taken from eq 5.89
 poseOut = poseIn + [delS*cos(poseIn(3)+delT/odoB); delS*sin(poseIn(3)+delT/odoB); delT];
 
 %% Covariance update
