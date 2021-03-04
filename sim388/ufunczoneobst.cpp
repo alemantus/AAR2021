@@ -173,8 +173,8 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 	//Trying to fix the segmentation error
 
       double carthCoord[2][501], carthPoint[2][501];
-      pol2carth(theta, r, carthPoint);
-      memcpy((void *)carthCoord, (void *)carthPoint, sizeof(carthPoint));
+      pol2carth(theta, r, carthCoord);
+      //memcpy((void *)carthCoord, (void *)carthPoint, sizeof(carthPoint));
 
       snprintf(reply, MRL, "<carthCoord1=\"%g\" carthCoord2=\"%g\" theta=\"%f\" dist=\"%g\", scanmid=\"%f\"/>\n", carthCoord[0][450],carthCoord[1][450], theta[450],r[450], data->getRangeMeter(450));
 
