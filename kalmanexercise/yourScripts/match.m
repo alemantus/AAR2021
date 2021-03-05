@@ -1,4 +1,4 @@
-function [ matchResult ] = match( pose, poseCov, worldLines, laserLines )
+function [ matchResult ] = match(pose, poseCov, worldLines, laserLines )
 % [matchResult] = MATCH(pose,poseCov,worldLines,laserLines)
 %   This function matches the predicted lines to the extracted lines. The
 %   criterion for a match is the mahalanobis distance between the (alpha,
