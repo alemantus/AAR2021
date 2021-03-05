@@ -24,5 +24,7 @@ r_l = r_r-lsrRelPose(1)*cos(alpha_r)-lsrRelPose(2)*sin(alpha_r);
 
 projectedLine = [alpha_l r_l];
 
-lineCov = zeros(2,2);
+lineCov = linecov(worldLine, poseIn, covIn);
+
+%lineCov = zeros(2,2);
 end

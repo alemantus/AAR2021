@@ -20,9 +20,16 @@ function [ matchResult ] = match( pose, poseCov, worldLines, laserLines )
 %                     [ matchIndex1    , matchIndex2    ...  ]
 %           Note that the worldLines are in the world coordinates!
 
+for i = 1:length(worldLines)
+    matchResult(i) = [worldLine(1,i) worldLine(2,i)]
+
+
     % The varAlpha and varR are the assumed variances of the parameters of
     % the extracted lines, they are read globally.
     global varAlpha varR
+
     
+%% Calculation
+matchResult = transpose([worldLines(1) worldLines(2) ])
 
 end
