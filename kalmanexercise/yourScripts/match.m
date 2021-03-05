@@ -21,7 +21,7 @@ function [ matchResult ] = match( pose, poseCov, worldLines, laserLines )
 %           Note that the worldLines are in the world coordinates!
 
 for i = 1:length(worldLines)
-    matchResult(i) = [worldLine(1,i) worldLine(2,i)]
+    matchResult(i) = [worldLine(1,i) worldLine(2,i) abs(line(1,i)-pose(1,i)) abs(line(2,i)-pose(2.i)) ]
 
 
     % The varAlpha and varR are the assumed variances of the parameters of
