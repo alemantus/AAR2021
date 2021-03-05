@@ -20,16 +20,29 @@ function [ matchResult ] = match(pose, poseCov, worldLines, laserLines )
 %                     [ matchIndex1    , matchIndex2    ...  ]
 %           Note that the worldLines are in the world coordinates!
 
-for i = 1:length(worldLines)
-    matchResult(i) = [worldLine(1,i) worldLine(2,i) laserLine(1,i)-pose(1,i) laserLine(2,i)-pose(2,i) i]
 
-end
+%Predicted = pose (carth)
+r_p = sqrt(pose(1)^2+pose(2)^2);
+alpha_p = atan2(pose(2),pose(1));
+
+%Measured = laserLines (polar)
+
+%Innovation (measured - predicted)
+Innovation1 = laserLines(1) - alpha_p;
+Innovation2 = laserLines(2) - r_p;
+
+
 % The varAlpha and varR are the assumed variances of the parameters of
 % the extracted lines, they are read globally.
 global varAlpha varR
 
     
 %% Calculation
-matchResult = transpose(matchResult)
+matchResult = zeros(5,length(laserLines));
+
+for i = 1:lenght(laserLines)
+    matchResult(:,i) = [worldLine(1,1); worldLine(2,1); innovation1(1); innovation1(2); i];
+
+end
 
 end
