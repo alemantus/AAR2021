@@ -21,28 +21,40 @@ function [ matchResult ] = match(pose, poseCov, worldLines, laserLines )
 %           Note that the worldLines are in the world coordinates!
 
 
-%Predicted = pose (carth)
-r_p = sqrt(pose(1)^2+pose(2)^2);
-alpha_p = atan2(pose(2),pose(1));
+%Predicted (Found by RANSAC): h_i(worldLines, pose, lsrRelPose)
 
-%Measured = laserLines (polar)
+%Measured: laserLines 
 
 %Innovation (measured - predicted)
-Innovation1 = laserLines(1) - alpha_p;
-Innovation2 = laserLines(2) - r_p;
 
 
 % The varAlpha and varR are the assumed variances of the parameters of
 % the extracted lines, they are read globally.
 global varAlpha varR
-
-    
+ 
 %% Calculation
+sigmaR = [varAlpha 0; 0 varR];
+[projectedLine, lineCov] = projectToLaser(worldLine, pose, poseCov);
+
+
 matchResult = zeros(5,length(laserLines));
+innovation = zeros(2,length(laserLines));
 
 for i = 1:lenght(laserLines)
-    matchResult(:,i) = [worldLine(1,1); worldLine(2,1); innovation1(1); innovation1(2); i];
+    innovation(1,i) = laserLines(1,i)-projectedLine(1,i);
+    innovation(2,i) = laserLines(2,i)-projectedLine(2,i);
+    
+    matchResult(:,i) = [worldLines(1,1); worldLines(2,1); innovation(1,i); innovation(2,i); 0];
 
 end
 
+crit = zeros(1,length(mathResult));
+
+for j = 1:lenght(crit)
+    crit(j) = transpose(innovation(:,j))*inv(lineCov+sigmaR)*innovation(:,j);
+    if 4 >= crit(j)
+        matchResult(j,5) = 1;
+    else 
+        matchResult(j,5) = 0;
+    end
 end
