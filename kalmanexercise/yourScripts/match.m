@@ -21,10 +21,10 @@ function [matchResult] = match(pose, poseCov, worldLines, laserLines )
 %           Note that the worldLines are in the world coordinates!
 
 
-%Predicted (Found by RANSAC): h_i(worldLines, pose, lsrRelPose)
+%Predicted: h_i(worldLines, pose, lsrRelPose)
 %(alpha_L,r_L)
 
-%Measured: laserLines 
+%Measured (Found by RANSAC): laserLines 
 
 
 
@@ -37,7 +37,7 @@ global varAlpha varR
  
 %% Calculation
 sigmaR = [varAlpha 0; 0 varR];
-
+%sigmaR = zeros(2,2);
 
 
 %[projectedLine, lineCov] = projectToLaser(worldLines(:,1), pose, poseCov);
@@ -84,6 +84,15 @@ crit4 = transpose(innovation4)*inv(lineCov4+sigmaR)*innovation4;
 
 innovation1
 lineCov1
+
+innovation2
+lineCov2
+
+innovation3
+lineCov3
+
+innovation4
+lineCov4
 
 crit1
 crit2

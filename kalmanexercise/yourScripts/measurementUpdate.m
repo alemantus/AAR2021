@@ -19,13 +19,42 @@ function [ poseOut, poseCovOut ] = measurementUpdate( poseIn, poseCovIn, matchRe
 %       poseCovOut: The updated estimate of the robot pose covariance 
 %       matrix 
 
-    % Constants
-    % The laser scanner pose in the robot frame is read globally(lsrRelpose)
-    % The varAlpha and varR are the assumed variances of the parameters of
-    % the extracted lines, they are also read globally
-    global lsrRelPose varAlpha varR
+% Constants
+% The laser scanner pose in the robot frame is read globally(lsrRelpose)
+% The varAlpha and varR are the assumed variances of the parameters of
+% the extracted lines, they are also read globally
+global lsrRelPose varAlpha varR
 
-    poseOut = poseIn;
-    poseCovOut = poseCovIn;
+%Number of matched lines
+N = sum(matchResult(5,:));
+
+%Find the matches:
+for i = 1:length(matchResult(1,:))
+    if matchResult(5,i) == 1
+        %All the lines that have a match will come out here
+    end
+    
+end
+
+
+%poseOut = poseIn + K_t*v_t
+%poseCovOut = poseCovIn - K_t*sigma_IN*transpose(K_t)
+%K_t = poseCovIn*transpose(H_t)*inv(sigma_IN)
+
+%We have to find:
+%v_t(innovation = measured - predicted)
+%sigma_IN (innovation covariance)
+%H_t (jacobi of h_i(worldLines, pose, lsrRelPose)
+
+
+%Can be simplified to:
+%poseOut = poseIn + poseCovIn*inv(poseCovIn+R_t)*(z_t-poseIn)
+%poseCovOut = poseCovIn - poseCovIn*inv(poseCovIn+R_t)*poseCovIn
+
+%We have to find R_t, z_t
+
+    
+poseOut = poseIn;
+poseCovOut = poseCovIn;
 
 end
