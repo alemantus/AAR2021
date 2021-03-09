@@ -67,18 +67,10 @@ if length1 > length2
     
 else
     theta = line2(1)-pi/2;
-    
-end
 
+end
 
 xcenter=(x(startIndex)+x(endIndex))/2;
 ycenter=(y(endIndex)+y(startIndex))/2;
 
-
 square = [xcenter ycenter theta];
-
-
-
-
-
-    
