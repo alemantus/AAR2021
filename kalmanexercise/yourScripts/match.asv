@@ -44,14 +44,14 @@ matchResult = zeros(5,length(worldLines));
 innovation = zeros(2,length(worldLines));
 projectedLine = zeros(2,length(worldLines));
 
-for i = 1:length(laserLines)
+for i = 1:length(worldLines)
     projectedLine(:,i) = projectToLaser(worldLines(:,i), pose, poseCov);
 end
 
 
 
 for i = 1:length(laserLines)
-    innovation(1,i) = laserLines(1,i)-projectedLine(1,i);
+    innovation(1,i) = 1laserLines(,i)-projectedLine(1,i);
     innovation(2,i) = laserLines(2,i)-projectedLine(2,i);
     
     matchResult(:,i) = [worldLines(1,i); worldLines(2,i); innovation(1,i); innovation(2,i); 0];

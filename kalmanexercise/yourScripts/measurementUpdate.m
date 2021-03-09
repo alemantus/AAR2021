@@ -1,4 +1,4 @@
-function [ poseOut, poseCovOut ] = measurementUpdate( poseIn, poseCovIn, matchResult )
+function [ poseOut, poseCovOut ] = measurementUpdate( poseIn, poseCovIn, matchResult)
 %[ poseOut, poseCovOut ] =MEASUREMENTUPDATE ( poseIn, poseCovIn,
 %matchResult ) perform extended Kalman filter measurement update on the
 %estimated robot pose poseIn with covariance poseCovIn using a set of
