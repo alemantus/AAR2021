@@ -7,10 +7,11 @@ function transform = findTransform(odoPose, pose)
 
 
 
-transformTheta = odoPose(3)-pose(3);
+transformTheta = odoPose(3)-pose(1);
 
 transformXY = [-cos(transform(3)) sin(transform(3)); -sin(transform(3)) -cos(transform(3))]*[pose(1); pose(2)]+[odoPose(1); odoPose(2)];
 
+transform = [transformXY; transformTheta];
 
 %transform = [0;0;0];
 end

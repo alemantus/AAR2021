@@ -21,6 +21,12 @@ matchPose = pose; %Recording the pose during mathing for plotting purposes
 
 % Find the next waypoint in world coordinates and put it in targetPose
 targetPose = [0; 0; 0];
+%targetPose = [0.5; 0.5; pi];
+%targetPose = [-0.5; 0.5; -pi/2];
+%targetPose = [-0.5; -0.5; 0];
+%targetPose = [0.5; -0.5; pi/2];
+%targetPose = [0.5; 0.5; pi];
+
 
 
 %Find the transformation from the estimated world coordinates to the 

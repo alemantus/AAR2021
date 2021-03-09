@@ -22,8 +22,11 @@ function [matchResult] = match(pose, poseCov, worldLines, laserLines )
 
 
 %Predicted (Found by RANSAC): h_i(worldLines, pose, lsrRelPose)
+%(alpha_L,r_L)
 
 %Measured: laserLines 
+
+
 
 %Innovation (measured - predicted)
 
@@ -37,20 +40,24 @@ sigmaR = [varAlpha 0; 0 varR];
 
 
 
-[projectedLine, lineCov] = projectToLaser(worldLines, pose, poseCov);
+%[projectedLine, lineCov] = projectToLaser(worldLines(:,1), pose, poseCov);
 
 
 matchResult = zeros(5,length(worldLines));
 innovation = zeros(2,length(worldLines));
 projectedLine = zeros(2,length(worldLines));
+%lineCov = zeros(1,length(worldLines));
 
-for i = 1:length(laserLines)
-    projectedLine(:,i) = projectToLaser(worldLines(:,i), pose, poseCov);
+for i = 1:length(laserLines(1,:))
+    [projectedLine(:,i), lineCov] = projectToLaser(worldLines(:,i), pose, poseCov);
+    lineCov
 end
 
+lineCov
+laserLines
+projectedLine
 
-
-for i = 1:length(laserLines)
+for i = 1:length(laserLines(1,:))
     innovation(1,i) = laserLines(1,i)-projectedLine(1,i);
     innovation(2,i) = laserLines(2,i)-projectedLine(2,i);
     
@@ -58,13 +65,16 @@ for i = 1:length(laserLines)
 
 end
 
-crit = zeros(1,length(laserLines));
+crit = zeros(1,length(laserLines(1,:)));
 
-for j = 1:length(laserLines)
-    crit(j) = transpose(innovation(:,j))*inv(lineCov+sigmaR)*innovation(:,j);
-    if 4 >= crit(j)
-        matchResult(j,5) = 1;
+for i = 1:length(laserLines(1,:))
+    crit(i) = transpose(innovation(:,i))*inv(lineCov(i)+sigmaR)*innovation(:,i);
+    if 4 >= crit(i)
+        matchResult(5,i) = 1;
+        display("Found match")
+        pause
     else 
-        matchResult(j,5) = 0;
+        matchResult(5,i) = 0;
     end
+matchResult
 end
