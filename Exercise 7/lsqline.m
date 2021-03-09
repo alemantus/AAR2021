@@ -7,8 +7,8 @@ y = points(2,:);
 x_mean = sum(x)/length(x);
 y_mean = sum(y)/length(y);
 
-num = 2*sum(x)*sum(y)-2*length(x)*x*transpose(y);
-den = sum(x)*sum(x)-sum(y)*sum(y)-length(x)*x*transpose(x)+length(y)*y*transpose(y);
+num = 2*sum(x)*sum(y)-2*length(x)*dot(x,(y));
+den = sum(x)*sum(x)-sum(y)*sum(y)-length(x)*dot(x,(x))+length(y)*dot(y,y);
 
 alpha = atan2(num,den)/2;
 

@@ -1,7 +1,7 @@
 close all; clear; clc;
 
 %Orientation of box:
-th = 90;
+th = 45;
 
 %Placement of center:
 x_c = 0.3;
