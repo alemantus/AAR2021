@@ -17,13 +17,13 @@ poseOut = poseIn + [delS*cos(poseIn(3)+delT/odoB); delS*sin(poseIn(3)+delT/odoB)
 
 %% Covariance update
 Qt = [kR*abs(delSr) 0; 0 kL*abs(delSl)];
-Fx = [1 0 -delT*sin(poseIn(3)+delT/2); 0 1 delT*cos(poseIn(3)+delT/2); 0 0 1];
+Fx = [1 0 -delS*sin(poseIn(3)+delT/2); 0 1 delS*cos(poseIn(3)+delT/2); 0 0 1];
 
 Fu = zeros(3,2);
-Fu(1,1) = 0.5*cos(poseIn(3)+delT/2)-(delS/2*odoB)*sin(poseIn(3)+delT/2);
-Fu(1,2) = 0.5*cos(poseIn(3)+delT/2)+(delS/2*odoB)*sin(poseIn(3)+delT/2);
-Fu(2,1) = 0.5*sin(poseIn(3)+delT/2)+(delS/2*odoB)*cos(poseIn(3)+delT/2);
-Fu(2,2) = 0.5*sin(poseIn(3)+delT/2)-(delS/2*odoB)*cos(poseIn(3)+delT/2);
+Fu(1,1) = 0.5*cos(poseIn(3)+delT/2)-(delS/(2*odoB))*sin(poseIn(3)+delT/2);
+Fu(1,2) = 0.5*cos(poseIn(3)+delT/2)+(delS/(2*odoB))*sin(poseIn(3)+delT/2);
+Fu(2,1) = 0.5*sin(poseIn(3)+delT/2)+(delS/(2*odoB))*cos(poseIn(3)+delT/2);
+Fu(2,2) = 0.5*sin(poseIn(3)+delT/2)-(delS/(2*odoB))*cos(poseIn(3)+delT/2);
 Fu(3,1) = 1/odoB;
 Fu(3,2) = -1/odoB;
 
