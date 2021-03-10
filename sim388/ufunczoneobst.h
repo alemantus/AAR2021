@@ -47,8 +47,12 @@ public:
     createBaseVar();
   }
   virtual bool setResource(UResBase * resource, bool remove);
-  void transform(double carth[][501], double x, double y, double a);
+  void transform(double carth[][501], double x, double y, double a, double poseW[][501]);
   void pol2carth(double* theta, double* dist, double carth[][501]);
+  void squareDetect(double theta[501], double dist[501], double poseW[][501], int minRange, double* square);
+  double dotProduct(double* x, double* y);
+  void lsqline(double *x, double *y, double* line);
+  void parking(double* square);
   /**
   Handle incomming command
   (intended for command separation)
