@@ -40,13 +40,6 @@ sigmaR = [varAlpha 0; 0 varR];
 %sigmaR = zeros(2,2);
 
 
-%[projectedLine, lineCov] = projectToLaser(worldLines(:,1), pose, poseCov);
-
-
-% matchResult = zeros(5,length(worldLines));
-% innovation = zeros(2,length(worldLines));
-% projectedLine = zeros(2,length(worldLines));
-%lineCov = zeros(1,length(worldLines));
 laserLinesA = zeros(2,length(worldLines));
 
 for i=1:length(laserLines(1,:))
@@ -71,25 +64,21 @@ matchResult(:,2) = [worldLines(1,2); worldLines(2,2); innovation2(1); innovation
 matchResult(:,3) = [worldLines(1,3); worldLines(2,3); innovation3(1); innovation3(2); 0];
 matchResult(:,4) = [worldLines(1,4); worldLines(2,4); innovation4(1); innovation4(2); 0];
 
-% for i = 1:length(laserLines(1,:))
-%     innovation(1,i) = laserLines(1,i)-projectedLine(1,i);
-%     innovation(2,i) = laserLines(2,i)-projectedLine(2,i);
-%     
-%     matchResult(:,i) = [worldLines(1,i); worldLines(2,i); innovation(1,i); innovation(2,i); 0];
-% 
-% end
+
 
 crit1 = transpose(innovation1)*inv(lineCov1+sigmaR)*innovation1;
 crit2 = transpose(innovation2)*inv(lineCov2+sigmaR)*innovation2;
 crit3 = transpose(innovation3)*inv(lineCov3+sigmaR)*innovation3;
 crit4 = transpose(innovation4)*inv(lineCov4+sigmaR)*innovation4;
 
+measured = [laserLinesA(:,1) laserLinesA(:,2) laserLinesA(:,3) laserLinesA(:,4)]
+predicted = [projectedLine1 projectedLine2 projectedLine3 projectedLine4]
 
-% 
-% crit1
-% crit2
-% crit3
-% crit4
+
+crit1
+crit2
+crit3
+crit4
 
 
 if 4>= crit1
@@ -102,18 +91,10 @@ elseif 4>= crit4
     matchResult(5,4) = 1;
 end
 
-% for i = 1:length(laserLines(1,:))
-%     crit(i) = transpose(innovation(:,i))*inv(lineCov(i)+sigmaR)*innovation(:,i);
-%     if 4 >= crit(i)
-%         matchResult(5,i) = 1;
-%         display("Found match")
-%         pause
-%     else 
-%         matchResult(5,i) = 0;
-%     end
+
 if sum(matchResult(5,:)) >= 1
     disp("MATCH FOUND!")
-    matchResult
+    %matchResult
 end
-%matchResult
+matchResult
 end

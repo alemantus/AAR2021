@@ -28,7 +28,7 @@ global lsrRelPose varAlpha varR
 sigmaR = [varAlpha 0; 0 varR];
 
 %Number of matched lines
-N = sum(matchResult(5,:));
+%N = sum(matchResult(5,:));
 
 %Find the matches:
 for i = 1:length(matchResult(1,:))
