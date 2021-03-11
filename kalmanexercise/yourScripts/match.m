@@ -53,16 +53,18 @@ for i=1:length(laserLines(1,:))
     laserLinesA(:,i) = laserLines(:,i);
 end
 
+
 [projectedLine1, lineCov1] = projectToLaser(worldLines(:,1), pose, poseCov);
 [projectedLine2, lineCov2] = projectToLaser(worldLines(:,2), pose, poseCov);
 [projectedLine3, lineCov3] = projectToLaser(worldLines(:,3), pose, poseCov);
 [projectedLine4, lineCov4] = projectToLaser(worldLines(:,4), pose, poseCov);
 
 
-innovation1 = laserLinesA(:,1)-projectedLine1(:);
+innovation1 = laserLinesA(:,1)-projectedLine1;
 innovation2 = laserLinesA(:,2)-projectedLine2;
 innovation3 = laserLinesA(:,3)-projectedLine3;
 innovation4 = laserLinesA(:,4)-projectedLine4;
+
 
 matchResult(:,1) = [worldLines(1,1); worldLines(2,1); innovation1(1); innovation1(2); 0];
 matchResult(:,2) = [worldLines(1,2); worldLines(2,2); innovation2(1); innovation2(2); 0];
@@ -82,22 +84,13 @@ crit2 = transpose(innovation2)*inv(lineCov2+sigmaR)*innovation2;
 crit3 = transpose(innovation3)*inv(lineCov3+sigmaR)*innovation3;
 crit4 = transpose(innovation4)*inv(lineCov4+sigmaR)*innovation4;
 
-innovation1
-lineCov1
 
-innovation2
-lineCov2
+% 
+% crit1
+% crit2
+% crit3
+% crit4
 
-innovation3
-lineCov3
-
-innovation4
-lineCov4
-
-crit1
-crit2
-crit3
-crit4
 
 if 4>= crit1
     matchResult(5,1) = 1;
@@ -118,5 +111,9 @@ end
 %     else 
 %         matchResult(5,i) = 0;
 %     end
-matchResult
+if sum(matchResult(5,:)) >= 1
+    disp("MATCH FOUND!")
+    matchResult
+end
+%matchResult
 end

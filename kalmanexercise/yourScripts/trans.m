@@ -5,10 +5,10 @@ function odoTargetPose = trans(transform,targetPose)
 % coordinates (transform).
 
 odoTargetPoseTheta = targetPose(3)+transform(3);
+odoTargetPoseX = cos(transform(3))*targetPose(1) - sin(transform(3))*targetPose(2) + transform(1);
+odoTargetPoseY = sin(transform(3))*targetPose(1) + cos(transform(3))*targetPose(2) + transform(1);
 
-odoTargetPoseXY = [cos(transform(3)) -sin(transform(3)); sin(transform(3)) cos(transform(3))]*[targetPose(1); targetPose(2)]+[transform(1); transform(2)];
-
-odoTargetPose = [odoTargetPoseXY; odoTargetPoseTheta];
+odoTargetPose = [odoTargetPoseX; odoTargetPoseY; odoTargetPoseTheta];
 
 
 %odoTargetPose = [0;0;0];

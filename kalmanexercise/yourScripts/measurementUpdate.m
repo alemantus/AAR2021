@@ -25,6 +25,8 @@ function [ poseOut, poseCovOut ] = measurementUpdate( poseIn, poseCovIn, matchRe
 % the extracted lines, they are also read globally
 global lsrRelPose varAlpha varR
 
+sigmaR = [varAlpha 0; 0 varR];
+
 %Number of matched lines
 N = sum(matchResult(5,:));
 
@@ -32,29 +34,34 @@ N = sum(matchResult(5,:));
 for i = 1:length(matchResult(1,:))
     if matchResult(5,i) == 1
         %All the lines that have a match will come out here
+        zw(1) = matchResult(3,i);
+        zw(2) = matchResult(3,i);
+        v_t(1) = matchResult(3,i);
+        v_t(2) = matchResult(4,i);
     end
     
 end
 
 
-%poseOut = poseIn + K_t*v_t
-%poseCovOut = poseCovIn - K_t*sigma_IN*transpose(K_t)
+if sum(matchResult(5,:)) >= 1
+H = [0 0 -1; -cos(zw(1)) -sin(zw(1)) lsrRelPose(1)*sin(-zw(1)+poseIn(3))+lsrRelPose(2)*cos(-zw(1)+poseIn(3))];
+sigma_IN = H*poseCovIn*transpose(H)+sigmaR;
+K_t = poseCovIn*transpose(H)*inv(sigma_IN);
+
+
+poseOut = poseIn + K_t*transpose(v_t);
+poseCovOut = poseCovIn - K_t*sigma_IN*transpose(K_t);
+
 %K_t = poseCovIn*transpose(H_t)*inv(sigma_IN)
 
 %We have to find:
 %v_t(innovation = measured - predicted)
 %sigma_IN (innovation covariance)
 %H_t (jacobi of h_i(worldLines, pose, lsrRelPose)
-
-
-%Can be simplified to:
-%poseOut = poseIn + poseCovIn*inv(poseCovIn+R_t)*(z_t-poseIn)
-%poseCovOut = poseCovIn - poseCovIn*inv(poseCovIn+R_t)*poseCovIn
-
-%We have to find R_t, z_t
-
+disp ("POSITION CORRECTED!")
+else
     
 poseOut = poseIn;
 poseCovOut = poseCovIn;
-
+end
 end
