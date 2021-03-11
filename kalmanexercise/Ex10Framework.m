@@ -14,7 +14,7 @@ nTarget = 0;
 %% Run
 if(simulation)
     realPose = pose + randn(3,1).*sqrt([poseCov(1,1); poseCov(2,2); poseCov(3,3)]); %Generate a real pose based on the initial uncertainty
-    odoPose = [0;0;0];
+    odoPose = [-0.92;-0.92;0];
     lsrSck = 0;
     mrcSck = 0;
 else

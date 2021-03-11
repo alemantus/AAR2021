@@ -71,15 +71,6 @@ crit2 = transpose(innovation2)*inv(lineCov2+sigmaR)*innovation2;
 crit3 = transpose(innovation3)*inv(lineCov3+sigmaR)*innovation3;
 crit4 = transpose(innovation4)*inv(lineCov4+sigmaR)*innovation4;
 
-measured = [laserLinesA(:,1) laserLinesA(:,2) laserLinesA(:,3) laserLinesA(:,4)]
-predicted = [projectedLine1 projectedLine2 projectedLine3 projectedLine4]
-
-
-crit1
-crit2
-crit3
-crit4
-
 
 if 4>= crit1
     matchResult(5,1) = 1;
