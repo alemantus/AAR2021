@@ -25,6 +25,7 @@ alpha_l = wrapToPi(alpha_l);
 r_l = r_r-lsrRelPose(1)*cos(alpha_r)-lsrRelPose(2)*sin(alpha_r);
 
 
+
 projectedLine = [alpha_l; r_l];
 
 % projectedLine

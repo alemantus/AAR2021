@@ -34,8 +34,8 @@ sigmaR = [varAlpha 0; 0 varR];
 for i = 1:length(matchResult(1,:))
     if matchResult(5,i) == 1
         %All the lines that have a match will come out here
-        zw(1) = matchResult(3,i);
-        zw(2) = matchResult(3,i);
+        zw(1) = matchResult(1,i);
+        zw(2) = matchResult(2,i);
         v_t(1) = matchResult(3,i);
         v_t(2) = matchResult(4,i);
     end

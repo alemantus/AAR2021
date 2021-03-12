@@ -11,7 +11,6 @@ global lsrRelPose % The laser scanner pose in the robot frame is read globally
 H = [0 0 -1; -cos(zw(1)) -sin(zw(1)) lsrRelPose(1)*sin(-zw(1)+pose(3))+lsrRelPose(2)*cos(-zw(1)+pose(3))];
 
 
-
 sigmazp = H*poseCov*transpose(H);
 
 
