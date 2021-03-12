@@ -276,13 +276,12 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 void UFunczoneobst::parking(double* square)
 {
-	square[0] = square[0] - 0.26;
 
 
 	//Update parking to work with our system, where we use relative coordinates
 
 
-	/*double dx, dy;
+	double dx, dy;
 	double c2p = 0.2+0.26+boxWidth/2;
 	if(square[2] > M_PI/2){ //short side close over robot
 		dx = c2p*sin(square[2] - M_PI/2);
@@ -299,7 +298,7 @@ void UFunczoneobst::parking(double* square)
 	}
 	square[0]=square[0]+dx;
 	square[1]=square[1]+dy;
-	*/
+	
 
 
 
