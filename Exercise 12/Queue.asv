@@ -32,15 +32,19 @@ while size(queue,1) ~= 0
     if (map(nbi) == 0)
         map(nbi) = d;
         queue(size(queue,1)+1,:) = nbi;
-    elseif ( map(nbi) > d)
-        map(nbi) = d;
+    else
+        map(nbi) > d
+        
     end
     
+    
+    
+    % Set the map and add the neighbour to the map set
+    map(dummy(1), dummy(2)) = map(queue(1,1), queue(1,2)) + 1;
+    queue(size(queue,1)+1,:) = dummy;
   end
 
   % Pop the top map cell from the queue
   queue = queue(2:end,:);
 end
-
-
 
