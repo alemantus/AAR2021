@@ -6,7 +6,7 @@ map = zeros(10,10);
 map(1:7,3)=ones(7,1)*-1;
 map(3:10)=ones(8,1)*-1;
 goal=[2,2];
-start=[9,7];
+start=[2,6];
 
 
 %The neighbouring cell's relative coordinates to the current point
@@ -14,7 +14,7 @@ neighbours = [ 1 0; 0 1; 0 -1; -1 0;  -1 -1; -1 1; 1 -1;  1 1];
 
 dist =       [ 1;  1;  1;   1;    1.41;  1.41;  1.41;   1.41];
 
-queue = start;
+queue = [start(1) start(2)];
 
 %FIFO Queueing
 
@@ -61,6 +61,12 @@ while size(queue,1) ~= 0
   queiteration = queiteration+1;
 end
 
+map(start(1),start(2)) = 0
+
+
+
+display("check")
+
   %%Route
   %we have a map, now we need a route - easiest to start from goal and move
   %towards robot.
@@ -69,6 +75,7 @@ end
   j= 1;
   globalCoordinate= 0;
   while (route(end,1) ~= start(1) || route(end,2) ~= start(2))
+      localMin=999;
       for i=1:size(neighbours,1) 
         
         nbi2 =  route(end,:) + neighbours(i,:);
@@ -86,9 +93,11 @@ end
 
       end
   route(size(route,1)+1,:) = globalCoordinate;
-  driveArray(j)="drivew " + string(globalCoordinate(1)) + " " + ...
-      string(globalCoordinate(2)) + " " + string(abs(atan2(-localCoordinate(1), -localCoordinate(2)))) + " " + "rad"; 
-  j = j+1;
+  %driveArray(j)="drivew " + string(globalCoordinate(1)) + " " + ...
+      %string(globalCoordinate(2)) + " " + string(abs(atan2(-localCoordinate(1), -localCoordinate(2)))) + " " + "rad"; 
+  %j = j+1;
 
   end
-  fliplr(driveArray)
+  %fliplr(driveArray)
+  
+  
