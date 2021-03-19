@@ -70,8 +70,6 @@ void UFunczoneobst::pol2carth(double* theta, double* dist, double carth[][501]){
   //return **carth;
 }
 
-
-
 void UFunczoneobst::transform(double carth[][501], double x, double y, double a, double poseW[][501]){
   
   for (int i=0; i<501; i++){
@@ -88,9 +86,6 @@ double UFunczoneobst::dotProduct(double* x, double* y){
    }
    return product;
 }
-
-
-
 
 void UFunczoneobst::lsqline(double* x, double* y, double* line){
   double x_sum;
@@ -125,7 +120,6 @@ void UFunczoneobst::lsqline(double* x, double* y, double* line){
   }
  
 }
-
 
 void UFunczoneobst::squareDetect(double theta[501], double dist[501], double poseW[][501], int minRange, double* square){
   
@@ -174,9 +168,8 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 	  double distDiff[501];
 
-	  //Gaussian filter?
-	  //filter2D(dist, filterOut, ddepth , kernel, anchor, delta, BORDER_DEFAULT );
-	  
+	  //Gaussian filter
+  
 	  int const nf = 501;
 	  int const ng = 25;
 	  int n = 25+501 -1;
@@ -188,9 +181,6 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 	      filterOut[i] += (dist[j] * kernel[i - j]);
 	    }
 	  }
-
-	  
-
 	  //Take the derivative twice:
 	  int cornerIndex = startIndex+1;
 
@@ -211,9 +201,6 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 	  }
 	  
-          
-	  
-
 	  //Make point clouds for both lines
 	  double x1[cornerIndex-startIndex], y1[cornerIndex-startIndex];
 	  double x2[endIndex-cornerIndex], y2[endIndex-cornerIndex];
@@ -222,12 +209,9 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 	  for (int i = startIndex; i <= cornerIndex; i++){
 	    x1[i - (startIndex)]=poseW[0][i];
 	    y1[i - (startIndex)]=poseW[1][i];
-	    
 
 	  }
 	  
-	  
-
 	  for (int i = cornerIndex; i <= endIndex; i++){
 	    x2[i - (cornerIndex)]=poseW[0][i];
 	    y2[i - (cornerIndex)]=poseW[1][i];
@@ -237,8 +221,6 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 	  
 	  double line1[2], line2[2];
 	  
-
-
 	  //Find lines with lsqline
 	  lsqline(x1, y1, line1);
 	  lsqline(x2, y2, line2);
@@ -250,60 +232,48 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 	  if (length1 > length2){
 
-	    //Not sure about these square subtractions. The apparent orientation of the square can be off?
-	    //It probably depends on where we see the box, as sometimes the robot. Perhaps we should add pi/2 if
-	    //the box orientation is the other way? Since its relative coordinates
 
-	    square[2] = line1[0];
+	    square[2] = line2[0];
 
 	    boxWidth = length2;
 
 	  }else{
-	    square[2] = line2[0]; //I dont think we should subtract pi from the orientation in both cases anyway
+	    square[2] = line1[0];
 	    boxWidth = length1 ;
 
 	  }
 
 	  square[0] = (poseW[0][startIndex]+poseW[0][endIndex])/2;
 	  square[1] = (poseW[1][endIndex]+poseW[1][startIndex])/2;
-
-	  //sizeof(distDiff
-	    
 	  
   }
 }
-
 
 void UFunczoneobst::parking(double* square)
 {
 
 
-	//Update parking to work with our system, where we use relative coordinates
-
+	//Displace square center to makea  parking spot:
 
 	double dx, dy;
-	double c2p = 0.2+0.26+boxWidth/2;
+	double displace = 0.2+0.26+boxWidth/2;
 	if(square[2] > M_PI/2){ //short side close over robot
-		dx = c2p*sin(square[2] - M_PI/2);
-		dy = -c2p*cos(square[2] - M_PI/2);
+		dx = displace*sin(square[2] - M_PI/2);
+		dy = -displace*cos(square[2] - M_PI/2);
 	}else if((square[2] < M_PI/2) && (square[2] > 0)){ //long side close over robot
-		dx = -c2p*cos(square[2]);
-		dy = -c2p*sin(square[2]);
+		dx = -displace*cos(square[2]);
+		dy = -displace*sin(square[2]);
 	}else if((square[2] < 0) && (square[2] >-M_PI/2)){ //long side close under robot
-		dx = -c2p*cos(square[2]);
-		dy = -c2p*sin(square[2]);
+		dx = -displace*cos(square[2]);
+		dy = -displace*sin(square[2]);
 	}else if(square[2] > -M_PI/2){ //short side close under robot
-		dx = c2p*sin(square[2] - M_PI/2);
-		dy = c2p*cos(square[2] - M_PI/2);
+		dx = displace*sin(square[2] - M_PI/2);
+		dy = displace*cos(square[2] - M_PI/2);
 	}
 	square[0]=square[0]+dx;
 	square[1]=square[1]+dy;
 	
-
-
-
 }
-
 
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
@@ -340,8 +310,6 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
   double minRange = 3; // min range in meter
   for (j=0;j<501;j++) r[j]=minRange;
 
-  // double minAngle = 0.0; // degrees
-//   double d,robotwidth;
   double zone[9];
   // check for parameters - one parameter is tested for - 'help'
   ask4help = msg->tag.getAttValue("help", value, MVL);
@@ -398,56 +366,20 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
           if (tmp<r[j])
 	     r[j]=tmp;
         }
-      }
-	
-
-	//Trying to fix the segmentation error
-
-      
+      } 
       pol2carth(theta, r, carthCoord);
 
-	//Do it in laser coordinates, retard
-
-      //transform(carthCoord, x, y, alpha, poseW);
-
-      //squareDetect(theta, r, poseW, minRange, square);
-
       squareDetect(theta, r, carthCoord, minRange, square);
 
       squareDetect(theta, r, carthCoord, minRange, square);
       squareDetect(theta, r, carthCoord, minRange, square);
       
-
-      //find parking spot from the square coordinates
       parking(square);
-
-
-
-      //memcpy((void *)carthCoord, (void *)carthPoint, sizeof(carthPoint));
-
-      //snprintf(reply, MRL, "<robot angle=\"%f\" robot x=\"%f\" robot y=\"%f\"/>\n", poseAtScan.h, x, y);
-
-
-      //snprintf(reply, MRL, "<carthCoord1=\"%g\" carthCoord2=\"%g\" theta=\"%f\" dist=\"%g\", poseW1=\"%g\", robot angle=\"%g\", robot x=\"%g\", iMAX=\"%d\"/>\n", carthCoord[0][500],carthCoord[1][500], theta[0],r[500], poseW[1][500], alpha, x, imax);
-
-      //snprintf(reply, MRL, "<boxX=\"%g\" boxY=\"%g\" boxTheta=\"%g\"/>\n", square[0], square[1], square[2]);
 
       snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" />\n", 
 	                  square[0],square[1],square[2]);
 
-
-
-      //send this string as the reply to the client
-
-      /*snprintf(reply, MRL, "<laser l1=\"%g\" l1=\"%g\" l2=\"%g\" l3=\"%g\" l4=\"%g\" "
-                                  "l5=\"%g\" l6=\"%g\" l7=\"%g\" l8=\"%g\" />\n", 
-	                  zone[0],zone[1],zone[2],zone[3],zone[4],
-                           zone[5],zone[6],zone[7],zone[8]);
-      */
-
       sendMsg(msg, reply);
-       
-      
     }
     else
       sendWarning(msg, "No scandata available");
@@ -461,18 +393,3 @@ void UFunczoneobst::createBaseVar()
 { // add also a global variable (global on laser scanner server) with latest data
   var_zone = addVarA("zone", "0 0 0 0 0 0 0 0 0", "d", "Value of each laser zone. Updated by zoneobst.");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

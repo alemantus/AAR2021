@@ -1,0 +1,28 @@
+laser "push t='0.1' cmd='localize'"
+wait 1
+
+corner1 = sqrt(0.5*0.5+0.5*0.5)
+
+turn 45 
+fwd corner1 @v0.3
+turn 135
+
+n=10
+label "start"
+
+ignoreobstacles
+drive -0.5 0.5 -180 : ($targetdist < 0.25)
+
+ignoreobstacles
+drive -0.5 -0.5 -90 : ($targetdist < 0.25)
+
+ignoreobstacles
+drive 0.5 -0.5 0 : ($targetdist < 0.25)
+
+ignoreobstacles
+drive 0.5 0.5 90 : ($targetdist < 0.25)
+
+n=n-1
+if(n>0) "start"
+
+stop
