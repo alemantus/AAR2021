@@ -5,8 +5,11 @@ clear;
 map = zeros(10,10);
 map(1:7,3)=ones(7,1)*-1;
 map(3:10)=ones(8,1)*-1;
-goal=[2,2];
-start=[2,6];
+goal=[9,9];
+start=[2,2];
+
+resolution = 0.5;
+
 
 
 %The neighbouring cell's relative coordinates to the current point
@@ -63,9 +66,13 @@ end
 
 map(start(1),start(2)) = 0
 
+thetaOld = 0;
+theta = 0;
 
 
 display("check")
+
+fileID = fopen('wavefront.sc','w');
 
   %%Route
   %we have a map, now we need a route - easiest to start from goal and move
@@ -93,11 +100,28 @@ display("check")
 
       end
   route(size(route,1)+1,:) = globalCoordinate;
-  %driveArray(j)="drivew " + string(globalCoordinate(1)) + " " + ...
-      %string(globalCoordinate(2)) + " " + string(abs(atan2(-localCoordinate(1), -localCoordinate(2)))) + " " + "rad"; 
-  %j = j+1;
+  localCoordinate=localCoordinate*resolution;
+  
+  theta = ((atan2(-localCoordinate(1), -localCoordinate(2))));
+  
+  
+  
+  theta1 = theta - thetaOld;
+      
+  driveArray(j)="drive " + string(-localCoordinate(2)) + " " + ...
+  string(-localCoordinate(1)) + " " + string(theta1) + " " + '"rad"' + " :($targetdist < 0)" + '\n';
+  
+
+  fprintf(fileID,driveArray(j));
+  thetaOld = theta;
+  
+  j = j+1;
 
   end
-  %fliplr(driveArray)
+  fliplr(driveArray)
+  
+  
+ 
+fclose(fileID);
   
   
