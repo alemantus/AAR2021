@@ -14,7 +14,7 @@ neighbours = [ 1 0; 0 1; 0 -1; -1 0;  -1 -1; -1 1; 1 -1;  1 1];
 
 dist =       [ 1;  1;  1;   1;    1.41;  1.41;  1.41;   1.41];
 
-queue = [9 9];
+queue = start;
 
 %FIFO Queueing
 
@@ -66,7 +66,8 @@ end
   %towards robot.
   route = [goal(1) goal(2)];
   localMin=999;
-  indx= 0;
+  j= 1;
+  globalCoordinate= 0;
   while (route(end,1) ~= start(1) || route(end,2) ~= start(2))
       for i=1:size(neighbours,1) 
         
@@ -76,13 +77,18 @@ end
             localMin_placeHolder = map(nbi2(1),nbi2(2));
             if (localMin_placeHolder < localMin)
                 localMin = localMin_placeHolder;
-                indx = nbi2;
+                globalCoordinate = nbi2;
+                localCoordinate = neighbours(i,:);
+                
             end
             
         end
 
       end
-  route(size(route,1)+1,:) = indx;
-
+  route(size(route,1)+1,:) = globalCoordinate;
+  driveArray(j)="drivew " + string(globalCoordinate(1)) + " " + ...
+      string(globalCoordinate(2)) + " " + string(abs(atan2(-localCoordinate(1), -localCoordinate(2)))) + " " + "rad"; 
+  j = j+1;
 
   end
+  fliplr(driveArray)
