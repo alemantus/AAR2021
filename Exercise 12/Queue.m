@@ -14,7 +14,7 @@ neighbours = [ 1 0; 0 1; 0 -1; -1 0;  -1 -1; -1 1; 1 -1;  1 1];
 
 dist =       [ 1;  1;  1;   1;    1.41;  1.41;  1.41;   1.41];
 
-queue = start;
+queue = [9 7];
 
 %FIFO Queueing
 
