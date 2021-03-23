@@ -1,24 +1,14 @@
-turn  1.5708  "rad" @v0.5
-fwd  0.5
-turn  0  "rad" @v0.5
-fwd  0.5
-turn  0  "rad" @v0.5
-fwd  0.5
-turn  -0.7854  "rad" @v0.5
-fwd  0.705
-turn  -0.7854  "rad" @v0.5
-fwd  0.705
-turn  0  "rad" @v0.5
-fwd  0.5
-turn  0  "rad" @v0.5
-fwd  0.5
-turn  0  "rad" @v0.5
-fwd  0.5
-turn  0  "rad" @v0.5
-fwd  0.5
-turn  0.7854  "rad" @v0.5
-fwd  0.705
-turn  -0.7854  "rad" @v0.5
-fwd  0.705
-turn  0  "rad" @v0.5
-fwd  0.5
+drive -0.05 0 -3.1416 "rad" :($targetdist < 0)
+drive -0.05 0 0 "rad" :($targetdist < 0)
+drive -0.05 0 0 "rad" :($targetdist < 0)
+drive -0.05 0 0 "rad" :($targetdist < 0)
+drive -0.05 0 0 "rad" :($targetdist < 0)
+drive -0.05 -0.05 0.7854 "rad" :($targetdist < 0)
+drive -0.05 -0.05 0 "rad" :($targetdist < 0)
+drive 0 -0.05 0.7854 "rad" :($targetdist < 0)
+drive 0 -0.05 0 "rad" :($targetdist < 0)
+drive 0 -0.05 0 "rad" :($targetdist < 0)
+drive 0 -0.05 0 "rad" :($targetdist < 0)
+drive 0 -0.05 0 "rad" :($targetdist < 0)
+drive 0 0 1.5708 "rad" :($targetdist < 0)
+drive 0 0 0 "rad" :($targetdist < 0)

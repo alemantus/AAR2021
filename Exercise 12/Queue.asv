@@ -5,8 +5,8 @@ clear;
 map = zeros(10,10);
 map(1:7,3)=ones(7,1)*-1;
 map(3:10)=ones(8,1)*-1;
-goal=[2,2];
-start=[9,9];
+goal=[2,9];
+start=[2,2];
 
 resolution = 0.05;
 
@@ -69,41 +69,45 @@ display("check")
 
 fileID = fopen('wavefront.sc','w');
 
-%%Route
-%we have a map, now we need a route - easiest to start from goal and move
-%towards robot.
-route = [goal(1) goal(2)];
-
-localMin=999;
-j= 1;
-globalCoordinate= 0;
-while (route(end,1) ~= start(1) || route(end,2) ~= start(2))
+  %%Route
+  %we have a map, now we need a route - easiest to start from goal and move
+  %towards robot.
+  route = [goal(1) goal(2)];
+  
+  
+  %localRoute = [0 0];
+  
   localMin=999;
-  for i=1:size(neighbours,1) 
-
-    nbi2 =  route(end,:) + neighbours(i,:);
-    nbi2;
-    if (map(nbi2(1),nbi2(2)) ~= -1)
-        localMin_placeHolder = map(nbi2(1),nbi2(2));
-        if (localMin_placeHolder < localMin)
-            localMin = localMin_placeHolder;
-            globalCoordinate = nbi2;
-            localCoordinate = neighbours(i,:);
-
+  j= 1;
+  globalCoordinate= 0;
+  while (route(end,1) ~= start(1) || route(end,2) ~= start(2))
+      localMin=999;
+      for i=1:size(neighbours,1) 
+        
+        nbi2 =  route(end,:) + neighbours(i,:);
+        nbi2;
+        if (map(nbi2(1),nbi2(2)) ~= -1)
+            localMin_placeHolder = map(nbi2(1),nbi2(2));
+            if (localMin_placeHolder < localMin)
+                localMin = localMin_placeHolder;
+                globalCoordinate = nbi2;
+                localCoordinate = neighbours(i,:);
+                
+            end
+            
         end
 
-    end
+      end
+  route(size(route,1)+1,:) = globalCoordinate;
+  
+  localCoordinate=localCoordinate*resolution;
+  
+  localRoute(size(route,1)+1,:) = localCoordinate;
 
   end
-route(size(route,1)+1,:) = globalCoordinate;
+  
 
-localCoordinate=localCoordinate*resolution;
-
-localRoute(size(route,1)+1,:) = localCoordinate;
-
-end
-
-
+localRoute
 localRoute = flip(localRoute,1);
 
 %The theta's have to be calculated forwards, not backwards
