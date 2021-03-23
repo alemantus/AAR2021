@@ -1,12 +1,24 @@
-drive 1 1 0.7854 "rad" :($drivendist < 1.41)
-drive 0 1 0.7854 "rad" :($drivendist < 1.41)
-drive 0 1 0 "rad" :($drivendist < 1)
-drive 0 1 0 "rad" :($drivendist < 1)
-drive 0 1 0 "rad" :($drivendist < 1)
-drive 0 1 0 "rad" :($drivendist < 1)
-drive 1 1 -0.7854 "rad" :($drivendist < 1.41)
-drive 1 0 -0.7854 "rad" :($drivendist < 1.41)
-drive 1 0 0 "rad" :($drivendist < 1)
-drive 1 0 0 "rad" :($drivendist < 1)
-drive 1 0 0 "rad" :($drivendist < 1)
-drive 1 0 0 "rad" :($drivendist < 1)
+turn  1.5708  "rad" @v0.5
+fwd  0.5
+turn  0  "rad" @v0.5
+fwd  0.5
+turn  0  "rad" @v0.5
+fwd  0.5
+turn  -0.7854  "rad" @v0.5
+fwd  0.705
+turn  -0.7854  "rad" @v0.5
+fwd  0.705
+turn  0  "rad" @v0.5
+fwd  0.5
+turn  0  "rad" @v0.5
+fwd  0.5
+turn  0  "rad" @v0.5
+fwd  0.5
+turn  0  "rad" @v0.5
+fwd  0.5
+turn  0.7854  "rad" @v0.5
+fwd  0.705
+turn  -0.7854  "rad" @v0.5
+fwd  0.705
+turn  0  "rad" @v0.5
+fwd  0.5

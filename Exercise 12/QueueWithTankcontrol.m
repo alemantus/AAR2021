@@ -8,7 +8,7 @@ map(3:10)=ones(8,1)*-1;
 goal=[9,9];
 start=[2,2];
 
-resolution = 1;
+resolution = 0.5;
 
 
 
@@ -109,32 +109,26 @@ fileID = fopen('wavefront.sc','w');
   
   localRoute(size(route,1)+1,:) = localCoordinate;
  
-  
-  %theta = ((atan2(-localCoordinate(1), -localCoordinate(2))));
-  
-  
-  
-  %theta1 = theta - thetaOld;
-      
-  %driveArray(j)="drive " + string(-localCoordinate(2)) + " " + ...
-  %string(-localCoordinate(1)) + " " + string(theta1) + " " + '"rad"' + " :($drivendist < 0)" + '\n';
-  
-
-  %fprintf(fileID,driveArray(j));
-  %thetaOld = theta;
-  
-  %j = j+1;
 
   end
   
 
-localRoute
-localRoute = fliplr(localRoute);
+%localRoute2 = zeros(size(route)); %Local route is kinda cursed, try again with global coordinates?
+
+
+
+route = flip(route,1);
+
+
+
+
+
+localRoute = flip(localRoute,1);
 
 %The theta's have to be calculated forwards, not backwards
-for i=1:size(localRoute,1)
+for i=3:size(localRoute,1)
     
-  theta = ((atan2(-localRoute(i,1), -localRoute(i,2))));
+  theta = ((atan2(-localRoute(i,1), -localRoute(i,2))))
   
   
   
@@ -146,27 +140,57 @@ for i=1:size(localRoute,1)
       drivendist = 1;
   end
   
-      
-  driveArray(i)="drive " + string(-localRoute(i,2)) + " " + ...
-  string(-localRoute(i,1)) + " " + string(theta1) + " " + '"rad"' + " :($drivendist < "+string(drivendist)+")" + '\n';
-  fprintf(fileID,driveArray(i));
+  
+  fprintf(fileID,"turn  "+string(theta1)+"  "+'"rad"'+" @v0.5" + '\n');
+  fprintf(fileID,"fwd  "+string(drivendist*resolution)+ '\n');
+     
+  %driveArray(i)="drive " + string(-localRoute(i,2)) + " " + ...
+  %string(-localRoute(i,1)) + " " + string(theta1) + " " + '"rad"' + " :($drivendist < "+string(drivendist)+")" + '\n';
+  %fprintf(fileID,driveArray(i));
 
   %fprintf(fileID,driveArray(j));
   thetaOld = theta;
     
 end
 
-%driveArray = fliplr(driveArray);
+% localRoute2 = [0 0];
+% 
+% localRoute2 = route(2,:) - start;
+% 
+% 
+% for i=3:length(route)
+%     
+%   
+%   
+%     
+%   theta = atan2(localRoute2(1), localRoute2(2))
+%   
+%   
+%   
+%   theta1 = theta - thetaOld;
+%   
+%   if abs(theta1) == pi/4 || abs(theta1) == 3/4*pi
+%       drivendist = 1.41;
+%   else
+%       drivendist = 1;
+%   end
+%   
+%   
+%   fprintf(fileID,"turn  "+string(theta1)+"  "+'"rad"'+" @v0.5" + '\n');
+%   fprintf(fileID,"fwd  "+string(drivendist*resolution)+ '\n');
+%      
+%   %driveArray(i)="drive " + string(-localRoute(i,2)) + " " + ...
+%   %string(-localRoute(i,1)) + " " + string(theta1) + " " + '"rad"' + " :($drivendist < "+string(drivendist)+")" + '\n';
+%   %fprintf(fileID,driveArray(i));
+% 
+%   %fprintf(fileID,driveArray(j));
+%   localRoute2 = route(i) - route(i-1);
+%   
+%   
+%   thetaOld = theta;
+%     
+% end
 
-%for j=1:length(driveArray)
-    
-    
-    
-    
-    
-    
-%    fprintf(fileID,driveArray(j));
-%end
 
 
 fclose(fileID);
