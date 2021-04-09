@@ -1,0 +1,51 @@
+# CompilerName=msvc160
+# Mode=optim
+ninja_required_version = 1.3
+
+# Basic folders
+root = .
+builddir = $root\build\win64
+matlabdir = C:\Program Files\MATLAB\R2020a
+startdir = C:\Users\alema\Downloads\AAR2021-master(1)\AAR2021-master\Exercise 7
+
+# Toolchain information
+cc = cl
+cxx = cl
+linker = link
+linkerxx = link
+
+cflags =  /c /Zp8 /GR /W3 /EHs /nologo /MD /D_CRT_SECURE_NO_DEPRECATE /D_SCL_SECURE_NO_DEPRECATE /D_SECURE_SCL=0   /DMATLAB_MEX_FILE  /DMATLAB_MEX_FILE /O2 /Oy- /DNDEBUG /fp:strict /I "$root" /I "$startdir" /I "$matlabdir\extern\include" /I "$root\interface" /I "." -DMODEL=squareDetect_mex  
+
+cxxflags =   /c /Zp8 /GR /W3 /EHs /nologo /MD /D_CRT_SECURE_NO_DEPRECATE /D_SCL_SECURE_NO_DEPRECATE /D_SECURE_SCL=0   /DMATLAB_MEX_FILE  /DMATLAB_MEX_FILE /O2 /Oy- /DNDEBUG /fp:strict /I "$root" /I "$startdir" /I "$matlabdir\extern\include" /I "$root\interface" /I "." -DMODEL=squareDetect_mex  
+
+ldflags =  /nologo /manifest   /DLL /LIBPATH:"$matlabdir\extern\lib\win64\microsoft" libmx.lib libmex.lib libmat.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  /out:"squareDetect_mex.mexw64" /LIBPATH:"$matlabdir\extern\lib\win64\microsoft" libmwblas.lib libemlrt.lib libcovrt.lib libut.lib libmwmathutil.lib  "$matlabdir\extern\lib\win64\microsoft\libmwippfilter.lib" "$matlabdir\extern\lib\win64\microsoft\libmwimfilter.lib" /export:mexFunction /export:mexfilerequiredapiversion /export:emlrtMexFcnProperties /export:squareDetect_initialize /export:squareDetect_terminate /export:squareDetect_atexit /export:squareDetect /export:emxEnsureCapacity_real_T /export:emxEnsureCapacity_int32_T /export:emxEnsureCapacity_uint32_T /export:emxInit_real_T /export:emxFree_real_T /export:emxInit_int32_T /export:emxFree_int32_T /export:emxInit_uint32_T /export:emxFree_uint32_T
+
+# Build Rules
+rule cc
+    command = $cc $cflags $in /Fo$out
+
+rule cxx
+    command = $cxx $cxxflags $in /Fo$out
+
+rule link
+    command = $linker @$out.rsp $ldflags
+    rspfile = $out.rsp
+    rspfile_content = $in
+
+rule linkxx
+    command = $linkerxx $in $ldflags
+
+# Build
+build $builddir\rt_nonfinite.obj : cc $root\rt_nonfinite.c
+build $builddir\squareDetect_data.obj : cc $root\squareDetect_data.c
+build $builddir\squareDetect_initialize.obj : cc $root\squareDetect_initialize.c
+build $builddir\squareDetect_terminate.obj : cc $root\squareDetect_terminate.c
+build $builddir\squareDetect.obj : cc $root\squareDetect.c
+build $builddir\_coder_squareDetect_api.obj : cc $root\interface\_coder_squareDetect_api.c
+build $builddir\_coder_squareDetect_mex.obj : cc $root\interface\_coder_squareDetect_mex.c
+build $builddir\squareDetect_emxutil.obj : cc $root\squareDetect_emxutil.c
+build $builddir\_coder_squareDetect_info.obj : cc $root\interface\_coder_squareDetect_info.c
+build $builddir\c_mexapi_version.obj : cc $matlabdir\extern\version\c_mexapi_version.c
+
+# Link
+build $root\squareDetect_mex.mexw64 : link $builddir\rt_nonfinite.obj $builddir\squareDetect_data.obj $builddir\squareDetect_initialize.obj $builddir\squareDetect_terminate.obj $builddir\squareDetect.obj $builddir\_coder_squareDetect_api.obj $builddir\_coder_squareDetect_mex.obj $builddir\squareDetect_emxutil.obj $builddir\_coder_squareDetect_info.obj $builddir\c_mexapi_version.obj 
