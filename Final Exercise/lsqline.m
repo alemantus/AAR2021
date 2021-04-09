@@ -16,6 +16,7 @@ r = x_mean*cos(alpha)+y_mean*sin(alpha);
 
 if r < 0
     r = -r;
+    
     if alpha < 0
         alpha = alpha+pi;
     else
@@ -23,6 +24,7 @@ if r < 0
     end
 end
 
+display(alpha)
 
 line = [alpha r];
 

@@ -1,4 +1,4 @@
-%function square = squareDetect(pol, poseW, maxlength)
+function square = squareDetect(pol, poseW, maxlength)
 
 x = poseW(1,:);
 y = poseW(2,:);
