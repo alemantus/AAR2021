@@ -171,18 +171,12 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
   double distDiff[501];
   int const nf = 501;
   int const ng = 25;
-  int n = 25+501 -1;
+  int n = 5+501 -1;
 
   //Gaussian kernel
-  static const double kernel[25] = { 0.0029690167439504968, 0.013306209891013651,
-    0.021938231279714643, 0.013306209891013651, 0.0029690167439504968,
-    0.013306209891013651, 0.059634295436180138, 0.098320331348845769,
-    0.059634295436180138, 0.013306209891013651, 0.021938231279714643,
-    0.098320331348845769, 0.16210282163712664, 0.098320331348845769,
-    0.021938231279714643, 0.013306209891013651, 0.059634295436180138,
-    0.098320331348845769, 0.059634295436180138, 0.013306209891013651,
-    0.0029690167439504968, 0.013306209891013651, 0.021938231279714643,
-    0.013306209891013651, 0.0029690167439504968 };
+  static const double kernel[5] = { 
+0.00135, 0.157305, 0.68269, 0.157305, 0.00135
+    };
 
 
   //find startIndex and endIndex
@@ -219,29 +213,34 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 	  for (int i = startIndex; i <= endIndex; i++){
 	    
 	    //distDiff[i] = filterOut[i];
-	    distDiff[i] = dist[i];
+	  	distDiff[i] = dist[i];
       //## ?? ##
-	    if (i < 2){
-	      distDiff[i] = 0;
-	    }
+	  	if (i < 2){
+	    	    distDiff[i] = 0;
+	    	}
       //## ?? ##
 	    //distDiff[i] = filterOut[i]-filterOut[i-1]-filterOut[i-2];
-	    distDiff[i] = dist[i]-dist[i-1]-dist[i-2];
+	    	distDiff[i] = dist[i]-dist[i-1]-dist[i-2];
 
 	    //Find index for max value
-	    if(distDiff[i] > distDiff[cornerIndex]){
-	      cornerIndex = i;
-	    }
-      double maxVal = distDiff[cornerIndex];
+	    	if(distDiff[i] > distDiff[cornerIndex]){
+	            cornerIndex = i;
+	    	}
 
 
-      snprintf(reply, MRL, "<cornerIndex=\"%d\" startIndex=\"%d\" distDiff=\"%g\" endIndex=\"%d\" maxVal=\"%g\" index=\"%d\" />\n",
-                    cornerIndex, startIndex, distDiff[i], endIndex, maxVal, i);
 
-      sendMsg(msg, reply);
+	      	double maxVal = distDiff[cornerIndex];
+
+
+	      	snprintf(reply, MRL, "<cornerIndex=\"%d\" startIndex=\"%d\" distDiff=\"%g\" endIndex=\"%d\" maxVal=\"%g\" index=\"%d\" />\n",
+		            cornerIndex, startIndex, distDiff[i], endIndex, maxVal, i);
+
+		sendMsg(msg, reply);
 
 	  }
-
+	  if(abs(distDiff[cornerIndex]-distDiff[endIndex])<0.05){
+		cornerIndex = endIndex;
+	  }
 
 	  //Make point clouds for both lines
 	  double x1[cornerIndex-startIndex], y1[cornerIndex-startIndex];
@@ -249,13 +248,13 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 
 
-    for (int i = startIndex; i <= cornerIndex; i++){
+    for (int i = startIndex; i < cornerIndex; i++){
 	    x1[i - (startIndex)]=poseW[0][i];
 	    y1[i - (startIndex)]=poseW[1][i];
       snprintf(reply, MRL, "<i=\"%d\" x1=\"%g\" y1=\"%g\" />\n",
                     i, poseW[0][i], poseW[1][i]);
 
-      sendMsg(msg, reply);
+      //sendMsg(msg, reply);
 
 	  }
 
@@ -265,7 +264,7 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
       	    snprintf(reply, MRL, "<i=\"%d\" x2=\"%g\" y2=\"%g\" />\n",
                     i, poseW[0][i], poseW[1][i]);
 
-      	    sendMsg(msg, reply);
+      	    //sendMsg(msg, reply);
 		//snprintf(reply, MRL, "<startindex=\"%d\" endindex=\"%d\" cornerIndex=\"%d\", itertation=\"%d\"/>\n", startIndex, endIndex, cornerIndex, i);
   	  	//sendMsg(msg, reply);
 	  }
@@ -285,11 +284,15 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 	
 	  lsqline(x2, y2, line2, lengthX);
-	  lsqlines[0] = line1[0];
-	  lsqlines[1] = line2[0];
 
-	  lsqlines[2] = line1[1];
-	  lsqlines[3] = line2[1];
+	  
+
+	  //lsqlines[0] = line1[0];
+	  //lsqlines[1] = line2[0];
+
+
+	  //lsqlines[2] = line1[1];
+	  //lsqlines[3] = line2[1];
 
     	  //length of the found object lines
 	  double length1 = sqrt( pow( (poseW[0][startIndex]-poseW[0][cornerIndex]) ,2) + pow( (poseW[1][startIndex]-poseW[1][cornerIndex]), 2) );
@@ -300,11 +303,29 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
     	  //Determine the orientation of the object
 	  if (length1 > length2){
-	    square[2] = line2[0];
+	    square[2] = line1[0];
+	    
+	    lsqlines[0] = line1[0];
+	    lsqlines[2] = line1[1];
+
+	    lsqlines[1] = line2[0];
+	    lsqlines[3] = line2[1];
+	    lsqlines[4] = length1;
+	    lsqlines[5] = length2;
+
 	    boxWidth = length2;
 	  }else{
-	    square[2] = line1[0];
+	    square[2] = line2[0];
 	    boxWidth = length1;
+	
+	    lsqlines[0] = line2[0];
+	    lsqlines[2] = line2[1];
+
+	    lsqlines[1] = line1[0];
+	    lsqlines[3] = line1[1];
+	    lsqlines[4] = length2;
+	    lsqlines[5] = length1;
+
 	  }
 	  square[0] = (poseW[0][startIndex]+poseW[0][endIndex])/2;
 	  square[1] = (poseW[1][endIndex]+poseW[1][startIndex])/2;
@@ -439,13 +460,19 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
       //squareDetect(theta, r, carthCoord, minRange, square, lsqlines);
 
       angleRelation = abs(lsqlines[1]-lsqlines[0]);
+      if (angleRelation < 0.2){
+	 lsqlines[4] = lsqlines[4] + lsqlines[5];
+	 lsqlines[5] = 0;
+
+      }
 
 
+      //parking(square,parkingCoordinate);
 
-      parking(square,parkingCoordinate);
+      snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" \n l4=\"%g\" l5=\"%g\" l6=\"%g\" l7 =\"%g\" l8 =\"%g\"  />\n",
+	                  square[0],square[1],square[2],angleRelation,lsqlines[4],lsqlines[5],lsqlines[0],lsqlines[1]);
 
-      snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" \n parkX=\"%g\" parkY=\"%g\" corner angle=\"%g\" Angle line1=\"%g\" Angle line2=\"%g\" distance to line1=\"%g\" distance to line2=\"%g\" lengthLine1=\"%g\" lengthline2 =\"%g\"  />\n",
-	                  square[0],square[1],square[2],parkingCoordinate[0],parkingCoordinate[1],angleRelation,lsqlines[0],lsqlines[1],lsqlines[2],lsqlines[3],lsqlines[4],lsqlines[5]);
+      //snprintf(reply, MRL, "<laser l1=\"%g\"
 
       sendMsg(msg, reply);
     }
