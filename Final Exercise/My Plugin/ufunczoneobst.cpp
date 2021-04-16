@@ -280,18 +280,33 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 
 	  //Not to be confused with the length of the sides, this is just the array sizes
-	  int lengthX= sizeof(x1)/sizeof(x1[0]);
+    //DEBUG if number of points are too low, measurements are unreliable
+    int lengthX= sizeof(x1)/sizeof(x1[0]);
+    snprintf(reply, MRL, "<length of x=\"%d\" />\n",
+            lengthX);
+    sendMsg(msg, reply);
 
+    //Find lines with lsqline
+    if(lengthX1 > 5){
+	     lsqline(x1, y1, line1, lengthX);
+     }
+     else{
+       line1[0] = 0;
+       line1[1] = 0;
+     }
 
-
-	  //Find lines with lsqline
-
-	  lsqline(x1, y1, line1, lengthX);
-
-	  lengthX= sizeof(x2)/sizeof(x2[0]);
-
-
-	  lsqline(x2, y2, line2, lengthX);
+    //DEBUG if number of points are too low, measurements are unreliable
+    int lengthX2= sizeof(x2)/sizeof(x2[0]);
+    snprintf(reply, MRL, "<length of x2=\"%d\" />\n",
+            lengthX2);
+    sendMsg(msg, reply);
+    if (lengthX2> 5){
+	     lsqline(x2, y2, line2, lengthX2);
+     }
+     else{
+       line2[0] = 0;
+       line2[1] = 0;
+     }
 
 
 
@@ -515,7 +530,6 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 	 lsqlines[5] = 0;
 
      }
-     
      if (angleRelation > M_PI/2){
        angleRelation = M_PI/2-angleRelation;
      }
