@@ -358,11 +358,52 @@ void UFunczoneobst::parking(double* square, double* parkingCoordinate)
 
 }
 
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-// #define SMRWIDTH 0.4
+void UFunczoneobst::objectAnalysis(double angleRelation, double* lsqlines, int* objects)
+{ // objects contain the confidence in the 4 different objects.
+	if (lsqlines[5] >= 12 && lsqlines[5] <= 17)
+	{
+		objects[0] = objects[0] + 1;
+		objects[3] = objects[3] + 1;
+	}
+
+	if (lsqlines[5] >= 17 && lsqlines[5] <= 22)
+	{
+		objects[2] = objects[2] + 1;
+	}
+	else if (lsqlines[4] >= 36 && lsqlines[4] <= 40)
+	{
+		objects[0] = objects[0] + 1;
+		objects[2] = objects[2] + 1;
+	}
+	else if (lsqlines[4] >= 28 && lsqlines[4] <= 31)
+	{
+		objects[1] = objects[1] + 1;
+		objects[3] = objects[3] + 1;
+	}
+	else if (lsqlines[4] >= 30 && lsqlines[4] <= 36)
+	{
+		objects[3] = objects[3] + 1;
+	}
+	else if (lsqlines[4] >= 38 && lsqlines[4] <= 42)
+	{
+		objects[2] = objects[2] + 1;
+	}
+	if (angleRelation < 1)
+	{
+		objects[2] = objects[2] + 1;
+		objects[3] = objects[3] + 1;
+	}
+	else
+	{
+		objects[0] = objects[0] + 1;
+		objects[1] = objects[1] + 1;
+	}
+  
+  
+}
+
+
+
 bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 {  // handle a plugin command
 
@@ -373,6 +414,7 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
   double carthCoord[2][501], carthPoint[2][501];
   double square[3];
   double lsqlines[6];
+  int objects[4] = {0, 0, 0, 0};
   double parkingCoordinate[3];
   //Apparently defining an array like this: double* theta[501]{} - doesnt work. It results in the segmentation fault
 
@@ -464,13 +506,15 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 	 lsqlines[4] = lsqlines[4] + lsqlines[5];
 	 lsqlines[5] = 0;
 
-      }
+     }
+	 
+	 objectAnalysis(angleRelation, lsqlines, objects);
 
 
       //parking(square,parkingCoordinate);
 
-      snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" \n l4=\"%g\" l5=\"%g\" l6=\"%g\" l7 =\"%g\" l8 =\"%g\"  />\n",
-	                  square[0],square[1],square[2],angleRelation,lsqlines[4],lsqlines[5],lsqlines[0],lsqlines[1]);
+      snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" \n l4=\"%g\" l5=\"%g\" l6=\"%g\" l7 =\"%g\" l8 =\"%g\" l9 =\"%d\" l10 =\"%d\" l11 =\"%d\" l12 =\"%d\" />\n",
+	                  square[0],square[1],square[2],angleRelation,lsqlines[4],lsqlines[5],lsqlines[0],lsqlines[1], objects[0], objects[1], objects[2], objects[3]);
 
       //snprintf(reply, MRL, "<laser l1=\"%g\"
 

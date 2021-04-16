@@ -53,6 +53,7 @@ public:
   double dotProduct(double* x, double* y, int lengthX);
   void lsqline(double *x, double *y, double* line, int lengthX);
   void parking(double* square, double* parking);
+  void objectAnalysis(double angleRelation, double* lsqlines, int* objects);
   /**
   Handle incomming command
   (intended for command separation)
