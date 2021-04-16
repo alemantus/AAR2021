@@ -49,7 +49,7 @@ points3(1,:) =  linspace(5,5,500);
 points3(2,:) = linspace(-8,3,500);
 
 %Estemating lines
-lineSee = lsqline(points);
+lineSee = lsqline(points2);
 
 
 %Plot of lines from world pose
@@ -57,8 +57,9 @@ figure
 hold on
 plot(poseW(1,:), poseW(2,:))
 line([lines(1,1) lines(3,1)],[lines(2,1) lines(4,1)],'linestyle','--','Color','green');
-%line([lines(1,2) lines(3,2)],[lines(2,2) lines(4,2)],'linestyle','--','Color','green');
-%line([lines(1,3) lines(3,3)],[lines(2,3) lines(4,3)],'linestyle','--','Color','green');
+% line([lines(1,2) lines(3,2)],[lines(2,2) lines(4,2)],'linestyle','--','Color','green');
+% line([lines(1,3) lines(3,3)],[lines(2,3) lines(4,3)],'linestyle','--','Color','green');
+plot(points2(1,:),points2(2,:))
 hold off
 title("Plot of world pose")
 legend("(0,0,0)","Wall")

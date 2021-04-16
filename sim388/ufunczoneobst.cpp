@@ -61,6 +61,7 @@ bool UFunczoneobst::setResource(UResBase * resource, bool remove) { // load reso
 	return result;
 }
 
+//transform polar coordinates to cartessian
 void UFunczoneobst::pol2carth(double* theta, double* dist, double carth[][501]){
 
   for (int i=0; i<501; i++){
@@ -70,8 +71,9 @@ void UFunczoneobst::pol2carth(double* theta, double* dist, double carth[][501]){
   //return **carth;
 }
 
+//transform from local to global?
 void UFunczoneobst::transform(double carth[][501], double x, double y, double a, double poseW[][501]){
-  
+
   for (int i=0; i<501; i++){
     poseW[0][i] = cos(a)*carth[0][i]-sin(a)*carth[1][i]+x;
     poseW[1][i] = sin(a)*carth[0][i]+cos(a)*carth[1][i]+y;
@@ -79,6 +81,7 @@ void UFunczoneobst::transform(double carth[][501], double x, double y, double a,
   }
 }
 
+//matrix dotProduct
 double UFunczoneobst::dotProduct(double* x, double* y){
    double product = 0;
    for (int i = 0; i < sizeof(x)/sizeof(x[0]); i++){
@@ -87,6 +90,8 @@ double UFunczoneobst::dotProduct(double* x, double* y){
    return product;
 }
 
+//lsqline find the distance to an object and the angle of a line
+//perpendicular to the object
 void UFunczoneobst::lsqline(double* x, double* y, double* line){
   double x_sum;
   double y_sum;
@@ -100,7 +105,7 @@ void UFunczoneobst::lsqline(double* x, double* y, double* line){
   }
   double x_mean = x_sum/lengthX;
   double y_mean = y_sum/lengthX;
-  
+
   double num = 2*x_sum*y_sum-2*lengthX*dotProduct(x, y);
   double den = x_sum*x_sum-y_sum*y_sum-lengthX*dotProduct(x, x)+lengthY*dotProduct(y, y);
   line[0] = atan2(num, den)/2;
@@ -111,27 +116,33 @@ void UFunczoneobst::lsqline(double* x, double* y, double* line){
     line[1] = -line[1];
 
     if(line[0] < 0){
-      line[0] += M_PI;    
+      line[0] += M_PI;
 
     }else{
       line[0] -= M_PI;
     }
 
   }
- 
+
 }
 
+//finds the startIndex, endIndex and cornerindex
 void UFunczoneobst::squareDetect(double theta[501], double dist[501], double poseW[][501], int minRange, double* square){
-  
-  
+
+
   int startIndex = 0;
   int endIndex = 0;
   double filterOut[501];
   Point anchor = Point( -1, -1 );
   double delta = 0;
   int ddepth = -1;
-  
-  
+  double line1[2], line2[2];
+  double distDiff[501];
+  int const nf = 501;
+  int const ng = 25;
+  int n = 25+501 -1;
+
+  //Gaussian kernel
   static const double kernel[25] = { 0.0029690167439504968, 0.013306209891013651,
     0.021938231279714643, 0.013306209891013651, 0.0029690167439504968,
     0.013306209891013651, 0.059634295436180138, 0.098320331348845769,
@@ -141,7 +152,9 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
     0.098320331348845769, 0.059634295436180138, 0.013306209891013651,
     0.0029690167439504968, 0.013306209891013651, 0.021938231279714643,
     0.013306209891013651, 0.0029690167439504968 };
-  
+
+
+  //find startIndex and endIndex
   for (int i=0; i<501; i++){
     if (dist[i] < minRange){
       startIndex = i;
@@ -157,23 +170,13 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
       break;
     }
   }
-  
+
   //For debugging
   const int MRL = 500;
   char reply[MRL];
-  
 
+  //Smoothing using Gaussian filter
   if (endIndex != 0){
-  
-
-	  double distDiff[501];
-
-	  //Gaussian filter
-  
-	  int const nf = 501;
-	  int const ng = 25;
-	  int n = 25+501 -1;
-
 	  for(auto i(0); i < n; ++i) {
 	    int const jmn = (i >= ng - 1)? i - (ng - 1) : 0;
 	    int const jmx = (i <  nf - 1)? i            : nf - 1;
@@ -183,14 +186,13 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 	  }
 	  //Take the derivative twice:
 	  int cornerIndex = startIndex+1;
-
 	  for (int i = startIndex; i <= endIndex; i++){
-	    
 	    distDiff[i] = filterOut[i];
-
+      //## ?? ##
 	    if (i < 2){
 	      distDiff[i] = 0;
 	    }
+      //## ?? ##
 	    distDiff[i] = filterOut[i]-filterOut[i-1]-filterOut[i-2];
 
 	    //Find index for max value
@@ -200,52 +202,47 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 
 	  }
-	  
+
 	  //Make point clouds for both lines
 	  double x1[cornerIndex-startIndex], y1[cornerIndex-startIndex];
 	  double x2[endIndex-cornerIndex], y2[endIndex-cornerIndex];
-	  
-	  //Something is cursed here: It crashes the code. Perhaps its when the corner cannotbe detected?
-	  for (int i = startIndex; i <= cornerIndex; i++){
+
+
+   //Something is cursed here: It crashes the code. Perhaps its when the corner cannotbe detected?
+   //??
+    for (int i = startIndex; i <= cornerIndex; i++){
 	    x1[i - (startIndex)]=poseW[0][i];
 	    y1[i - (startIndex)]=poseW[1][i];
 
 	  }
-	  
+
 	  for (int i = cornerIndex; i <= endIndex; i++){
 	    x2[i - (cornerIndex)]=poseW[0][i];
 	    y2[i - (cornerIndex)]=poseW[1][i];
 		//snprintf(reply, MRL, "<startindex=\"%d\" endindex=\"%d\" cornerIndex=\"%d\", itertation=\"%d\"/>\n", startIndex, endIndex, cornerIndex, i);
   	  	//sendMsg(msg, reply);
 	  }
-	  
-	  double line1[2], line2[2];
-	  
+
+
+
 	  //Find lines with lsqline
 	  lsqline(x1, y1, line1);
 	  lsqline(x2, y2, line2);
-	  
-	  
 
+    //length of the found object lines
 	  double length1 = sqrt( pow( (poseW[0][startIndex]-poseW[0][cornerIndex]) ,2) + pow( (poseW[1][startIndex]-poseW[1][cornerIndex]), 2) );
 	  double length2 = sqrt( pow( (poseW[0][endIndex]-poseW[0][cornerIndex]) ,2) + pow( (poseW[1][endIndex]-poseW[1][cornerIndex]), 2) );
 
+    //Determine the orientation of the object
 	  if (length1 > length2){
-
-
 	    square[2] = line2[0];
-
 	    boxWidth = length2;
-
 	  }else{
 	    square[2] = line1[0];
-	    boxWidth = length1 ;
-
+	    boxWidth = length1;
 	  }
-
 	  square[0] = (poseW[0][startIndex]+poseW[0][endIndex])/2;
 	  square[1] = (poseW[1][endIndex]+poseW[1][startIndex])/2;
-	  
   }
 }
 
@@ -253,7 +250,7 @@ void UFunczoneobst::parking(double* square)
 {
 
 
-	//Displace square center to makea  parking spot:
+	//Displace square center to make a parking spot:
 
 	double dx, dy;
 	double displace = 0.2+0.26+boxWidth/2;
@@ -272,7 +269,7 @@ void UFunczoneobst::parking(double* square)
 	}
 	square[0]=square[0]+dx;
 	square[1]=square[1]+dy;
-	
+
 }
 
 ///////////////////////////////////////////////////
@@ -289,7 +286,7 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
   double poseW[3][501];
   double carthCoord[2][501], carthPoint[2][501];
   double square[3];
-  //Apparently defining an array like this: double* theta[501]{} - doesnt work. It results in the segmentation fault  
+  //Apparently defining an array like this: double* theta[501]{} - doesnt work. It results in the segmentation fault
 
 
   const int MRL = 500;
@@ -326,13 +323,13 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
   else
   { // do some action and send a reply
     data = getScan(msg, (ULaserData*)extra);
-    // 
+    //
     if (data->isValid())
     {
     // check if a attribute (parameter) with name width exists and if so get its value
        bool gotwidth = msg->tag.getAttValue("width", value, MVL);
        if (gotwidth) {
-        	robotwidth=strtod(value, NULL);   
+        	robotwidth=strtod(value, NULL);
        }
        else {
         	robotwidth=0.26;
@@ -346,8 +343,8 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
       imax = data->getRangeCnt();
 
       delta = M_PI/imax;
-      
-      
+
+
 
       theta[0] = M_PI/2;
       tmp = data->getRangeMeter(0);
@@ -366,17 +363,17 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
           if (tmp<r[j])
 	     r[j]=tmp;
         }
-      } 
+      }
       pol2carth(theta, r, carthCoord);
 
       squareDetect(theta, r, carthCoord, minRange, square);
 
       squareDetect(theta, r, carthCoord, minRange, square);
       squareDetect(theta, r, carthCoord, minRange, square);
-      
+
       parking(square);
 
-      snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" />\n", 
+      snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" />\n",
 	                  square[0],square[1],square[2]);
 
       sendMsg(msg, reply);

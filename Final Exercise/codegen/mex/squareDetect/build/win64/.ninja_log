@@ -1,0 +1,12 @@
+# ninja log v5
+40	1792	6360356324294832	build/win64/squareDetect_data.obj	5778ea65db54b650
+180	1851	6360356324904841	build/win64/rt_nonfinite.obj	17a4e23fc29f55d3
+2	1914	6360356325044827	build/win64/squareDetect_initialize.obj	60f3780c065e41d3
+65	1965	6360356325264833	build/win64/squareDetect_terminate.obj	d1de1ef8318b65d8
+195	1983	6360356325824819	build/win64/_coder_squareDetect_info.obj	e4ab0e584936d3d5
+138	2304	6360356329414815	build/win64/squareDetect.obj	e6d786b535c5965f
+1804	2351	6360356329784820	build/win64/c_mexapi_version.obj	efc08ddc8b7e18e2
+1900	2442	6360356330794838	build/win64/_coder_squareDetect_mex.obj	266e18976631a1d3
+1970	2447	6360356330764821	build/win64/_coder_squareDetect_api.obj	222dca3ab1c0188f
+1919	2561	6360356331924913	build/win64/squareDetect_emxutil.obj	895e1c22a5cf54df
+2566	3169	6360356337914903	squareDetect_mex.mexw64	39b3ef05c2a4e4a1

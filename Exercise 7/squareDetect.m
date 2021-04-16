@@ -9,6 +9,7 @@ dist=pol(2,:);
 i=0;
 startIndex = 0;
 endIndex = 0;
+
 for i = 1:length(dist)
     
     if dist(i) < maxlength
