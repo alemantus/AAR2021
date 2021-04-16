@@ -96,12 +96,12 @@ double UFunczoneobst::dotProduct(double* x, double* y, int lengthX){
 
 
    }
-   
+
     const int MRL = 500;
     char reply[MRL];
     snprintf(reply, MRL, "<product=\"%g\" />\n",
                     product);
-  
+
 
   sendMsg(msg, reply);
 
@@ -123,14 +123,14 @@ void UFunczoneobst::lsqline(double* x, double* y, double* line, int lengthX){
   for (int i = 0; i < lengthX; i++){
     x_sum += x[i];
     y_sum += y[i];
-  }	
+  }
 
   snprintf(reply, MRL, "<lengthX=\"%d\" />\n",
                     lengthX);
-  
 
-  sendMsg(msg, reply);
-  
+
+  //sendMsg(msg, reply);
+
 
 
   double x_mean = x_sum/lengthX;
@@ -144,7 +144,8 @@ void UFunczoneobst::lsqline(double* x, double* y, double* line, int lengthX){
 
   if (line[1] < 0){
     line[1] = -line[1];
-
+  }
+/*
     if(line[0] < 0){
       line[0] += M_PI;
 
@@ -152,7 +153,14 @@ void UFunczoneobst::lsqline(double* x, double* y, double* line, int lengthX){
       line[0] -= M_PI;
     }
   }
-
+  if(line[0] > M_PI/2){
+    line[0] = M_PI/2-line[0];
+  }
+  else if(line[0] < -M_PI/2){
+    line[0] = M_PI/2+line[0];
+  }
+  */
+ //line[0] = M_PI/2-line[0];
 }
 
 //finds the startIndex, endIndex and cornerindex
@@ -174,7 +182,7 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
   int n = 5+501 -1;
 
   //Gaussian kernel
-  static const double kernel[5] = { 
+  static const double kernel[5] = {
 0.00135, 0.157305, 0.68269, 0.157305, 0.00135
     };
 
@@ -211,7 +219,7 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 	  //Take the derivative twice:
 	  int cornerIndex = startIndex+1;
 	  for (int i = startIndex; i <= endIndex; i++){
-	    
+
 	    //distDiff[i] = filterOut[i];
 	  	distDiff[i] = dist[i];
       //## ?? ##
@@ -282,10 +290,10 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 	  lengthX= sizeof(x2)/sizeof(x2[0]);
 
-	
+
 	  lsqline(x2, y2, line2, lengthX);
 
-	  
+
 
 	  //lsqlines[0] = line1[0];
 	  //lsqlines[1] = line2[0];
@@ -304,7 +312,7 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
     	  //Determine the orientation of the object
 	  if (length1 > length2){
 	    square[2] = line1[0];
-	    
+
 	    lsqlines[0] = line1[0];
 	    lsqlines[2] = line1[1];
 
@@ -317,7 +325,7 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 	  }else{
 	    square[2] = line2[0];
 	    boxWidth = length1;
-	
+
 	    lsqlines[0] = line2[0];
 	    lsqlines[2] = line2[1];
 
@@ -398,8 +406,8 @@ void UFunczoneobst::objectAnalysis(double angleRelation, double* lsqlines, int* 
 		objects[0] = objects[0] + 1;
 		objects[1] = objects[1] + 1;
 	}
-  
-  
+
+
 }
 
 
@@ -507,7 +515,13 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 	 lsqlines[5] = 0;
 
      }
-	 
+     
+     if (angleRelation > M_PI/2){
+       angleRelation = M_PI/2-angleRelation;
+     }
+     else if(angleRelation < -M_PI/2){
+       angleRelation = angleRelation + M_PI/2;
+     }
 	 objectAnalysis(angleRelation, lsqlines, objects);
 
 
