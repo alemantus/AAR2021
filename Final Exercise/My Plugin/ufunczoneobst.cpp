@@ -460,7 +460,7 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
       //squareDetect(theta, r, carthCoord, minRange, square, lsqlines);
 
       angleRelation = abs(lsqlines[1]-lsqlines[0]);
-      if (angleRelation < 0.2){
+      if (lsqlines[5] < 0.02 || angleRelation < 0.2){
 	 lsqlines[4] = lsqlines[4] + lsqlines[5];
 	 lsqlines[5] = 0;
 
