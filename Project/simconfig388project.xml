@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>
+<!--
+    Configuration file for 
+    Simulator Server
+-->
+
+<simserver>
+  <!-- *** Core Components Configuration *** -->
+  <!-- Sheduler configuration -->
+  <scheduler>
+    <period value="10000"/><!--in usec-->
+  </scheduler>
+  
+  <!-- Simulator configuration -->
+  <simstage>
+    <world wallmap="388project" linemap="388projectLine" scale="140" />
+    <guidemark gmno="1" gmpose = " -0.25 1.5 1.570796"/>
+    <guidemark gmno="2" gmpose = " 0.25 1.5 1.570796"/>
+    <guidemark gmno="3" gmpose = " 3.75 1.5 1.570796"/>
+    <guidemark gmno="4" gmpose = " 4.25 1.5 1.570796"/>
+    <guidemark gmno="5" gmpose = " -0.25 3.5 1.570796"/>
+    <guidemark gmno="6" gmpose = "0.25 3.5 1.570796"/>
+    <guidemark gmno="7" gmpose = " 3.75 3.5 1.570796"/>
+    <guidemark gmno="8" gmpose = " 4.25 3.5 1.570796"/>
+    <guidemark gmno="9" gmpose = " 0.25 4.6 1.570796"/>
+    <guidemark gmno="10" gmpose = " 3.75 4.6 1.570796"/>
+    <guidemark gmno="11" gmpose = " 0.5 4.75 0"/>
+    <guidemark gmno="12" gmpose = " 3.5 4.75 0"/>
+    <guidemark gmno="13" gmpose = " 1.75 4.0 0"/>
+    <guidemark gmno="14" gmpose = " 2.25 4.0 0"/>
+  </simstage>
+  
+  <!-- Robot server no. 0 -->
+  <robot>
+    <mrcserver port="8000"/>
+    <clients number="5"/>
+    <params name="smr0" robotpose="0.3 0.3 1.57" wheelbase="0.26" encresolution="0.00010245"/>
+      <corner x="-0.1" y="-0.15"/>
+    <corner x="0.25" y="-0.15"/>
+    <corner x="0.25" y="0.15"/>
+    <corner x="-0.1" y="0.15"/>
+    <irsensor ka="16.0" kb="76.0"/>
+    <!-- laserscanner port="19001" laserpose="0.26 0.0 0.0" startangle="-1.5708" resolution="0.0062832" nscan="501"/ -->
+    <laserscanner port="19001" laserpose="0.26 0.0 0.0" />
+  </robot>
+  
+  <!-- Robot server no. 1 
+  <robot>
+    <mrcserver port="8001"/>
+    <clients number="5"/>
+    <params name="smr1"  robotpose=" 1.0 1.0 0.0" wheelbase="0.26" encresolution="0.00010245"/>
+     <corner x="-0.1" y="-0.15"/>
+    <corner x="0.25" y="-0.15"/>
+    <corner x="0.25" y="0.15"/>
+    <corner x="-0.1" y="0.15"/>
+    <irsensor ka="16.0" kb="76.0"/>
+    <laserscanner port="19001" laserpose="0.26 0 0"/>
+  </robot>
+  -->
+  <!-- Robot server no. 2 
+  <robot>
+    <mrcserver port="8002"/>
+    <clients number="4"/>
+    <params name="smr2" wheelbase="0.26" encresolution="0.00010245"/>
+    <irsensor ka="16.0" kb="76.0"/>
+    <laserscanner port="19002"/>
+  </robot>
+-->
+  <!-- Robot server no. 3 
+  <robot>
+    <mrcserver port="8003"/>
+    <clients number="5"/>
+    <params name="smr3" wheelbase="0.26" encresolution="0.00010245"/>
+    <irsensor ka="16.0" kb="76.0"/>
+    <laserscanner port="19003"/>
+  </robot>
+-->
+</simserver>
