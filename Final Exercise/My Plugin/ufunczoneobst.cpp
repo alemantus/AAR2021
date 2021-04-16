@@ -175,7 +175,8 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
   Point anchor = Point( -1, -1 );
   double delta = 0;
   int ddepth = -1;
-  double line1[2], line2[2];
+  double line1[2] = {0, 0};
+  double line2[2] = {0, 0};
   double distDiff[501];
   int const nf = 501;
   int const ng = 25;
@@ -281,14 +282,14 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 	  //Not to be confused with the length of the sides, this is just the array sizes
     //DEBUG if number of points are too low, measurements are unreliable
-    int lengthX= sizeof(x1)/sizeof(x1[0]);
+    int lengthX1= sizeof(x1)/sizeof(x1[0]);
     snprintf(reply, MRL, "<length of x=\"%d\" />\n",
-            lengthX);
+            lengthX1);
     sendMsg(msg, reply);
 
     //Find lines with lsqline
     if(lengthX1 > 5){
-	     lsqline(x1, y1, line1, lengthX);
+	     lsqline(x1, y1, line1, lengthX1);
      }
      else{
        line1[0] = 0;
@@ -383,35 +384,35 @@ void UFunczoneobst::parking(double* square, double* parkingCoordinate)
 
 void UFunczoneobst::objectAnalysis(double angleRelation, double* lsqlines, int* objects)
 { // objects contain the confidence in the 4 different objects.
-	if (lsqlines[5] >= 12 && lsqlines[5] <= 17)
+	if (lsqlines[5] >= 0.12 && lsqlines[5] <= 0.17)
 	{
 		objects[0] = objects[0] + 1;
 		objects[3] = objects[3] + 1;
 	}
 
-	if (lsqlines[5] >= 17 && lsqlines[5] <= 22)
+	else if (lsqlines[5] >= 0.17 && lsqlines[5] <= 0.22)
 	{
 		objects[2] = objects[2] + 1;
 	}
-	else if (lsqlines[4] >= 36 && lsqlines[4] <= 40)
+	if (lsqlines[4] >= 0.36 && lsqlines[4] <= 0.40)
 	{
 		objects[0] = objects[0] + 1;
 		objects[2] = objects[2] + 1;
 	}
-	else if (lsqlines[4] >= 28 && lsqlines[4] <= 31)
+	else if (lsqlines[4] >= 0.28 && lsqlines[4] <= 0.30)
 	{
 		objects[1] = objects[1] + 1;
 		objects[3] = objects[3] + 1;
 	}
-	else if (lsqlines[4] >= 30 && lsqlines[4] <= 36)
+	else if (lsqlines[4] > 0.3 && lsqlines[4] <= 0.36)
 	{
 		objects[3] = objects[3] + 1;
 	}
-	else if (lsqlines[4] >= 38 && lsqlines[4] <= 42)
+	else if (lsqlines[4] >= 0.38 && lsqlines[4] <= 0.42)
 	{
 		objects[2] = objects[2] + 1;
 	}
-	if (angleRelation < 1)
+	/*if (angleRelation < 1)
 	{
 		objects[2] = objects[2] + 1;
 		objects[3] = objects[3] + 1;
@@ -420,7 +421,7 @@ void UFunczoneobst::objectAnalysis(double angleRelation, double* lsqlines, int* 
 	{
 		objects[0] = objects[0] + 1;
 		objects[1] = objects[1] + 1;
-	}
+	}*/
 
 
 }
