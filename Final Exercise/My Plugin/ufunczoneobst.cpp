@@ -392,7 +392,7 @@ void UFunczoneobst::objectAnalysis(double angleRelation, double* lsqlines, int* 
 
 	else if (lsqlines[5] >= 0.17 && lsqlines[5] <= 0.22)
 	{
-		objects[2] = objects[2] + 1;
+		objects[1] = objects[1] + 1;
 	}
 	if (lsqlines[4] >= 0.36 && lsqlines[4] <= 0.40)
 	{
@@ -408,7 +408,7 @@ void UFunczoneobst::objectAnalysis(double angleRelation, double* lsqlines, int* 
 	{
 		objects[3] = objects[3] + 1;
 	}
-	else if (lsqlines[4] >= 0.38 && lsqlines[4] <= 0.42)
+	else if (lsqlines[4] >= 0.39 && lsqlines[4] <= 0.42)
 	{
 		objects[2] = objects[2] + 1;
 	}
