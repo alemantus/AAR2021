@@ -327,7 +327,7 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
     	  //Determine the orientation of the object
 	  if (length1 > length2){
-	    square[2] = line1[0];
+	    square[2] = line2[0];
 
 	    lsqlines[0] = line1[0];
 	    lsqlines[2] = line1[1];
@@ -339,7 +339,7 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 	    boxWidth = length2;
 	  }else{
-	    square[2] = line2[0];
+	    square[2] = line1[0];
 	    boxWidth = length1;
 
 	    lsqlines[0] = line2[0];
@@ -351,8 +351,12 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 	    lsqlines[5] = length1;
 
 	  }
-	  square[0] = (poseW[0][startIndex]+poseW[0][endIndex])/2;
+	  square[0] = (poseW[0][startIndex]+poseW[0][endIndex])/2 + 0.25; //Add the distance from the laser scanner to the robot wheels
 	  square[1] = (poseW[1][endIndex]+poseW[1][startIndex])/2;
+
+	  lsqlines[6] = poseW[0][cornerIndex] + 0.25; //Add the corner X coordinate to the output
+	  lsqlines[7] = poseW[1][cornerIndex]; //Add the corner Y coordinate to the output 
+	
   }
 }
 
@@ -437,7 +441,7 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
   double poseW[3][501];
   double carthCoord[2][501], carthPoint[2][501];
   double square[3];
-  double lsqlines[6];
+  double lsqlines[8];
   int objects[4] = {0, 0, 0, 0};
   double parkingCoordinate[3];
   //Apparently defining an array like this: double* theta[501]{} - doesnt work. It results in the segmentation fault
@@ -531,19 +535,19 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 	 lsqlines[5] = 0;
 
      }
-     if (angleRelation > M_PI/2){
+     /*if (angleRelation > M_PI/2){
        angleRelation = M_PI/2-angleRelation;
      }
      else if(angleRelation < -M_PI/2){
        angleRelation = angleRelation + M_PI/2;
-     }
+     }*/
 	 objectAnalysis(angleRelation, lsqlines, objects);
 
 
       //parking(square,parkingCoordinate);
 
-      snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" \n l4=\"%g\" l5=\"%g\" l6=\"%g\" l7 =\"%g\" l8 =\"%g\" l9 =\"%d\" l10 =\"%d\" l11 =\"%d\" l12 =\"%d\" />\n",
-	                  square[0],square[1],square[2],angleRelation,lsqlines[4],lsqlines[5],lsqlines[0],lsqlines[1], objects[0], objects[1], objects[2], objects[3]);
+      snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" \n l4=\"%g\" l5=\"%g\" l6=\"%g\" l7 =\"%g\" l8 =\"%g\" l9 =\"%d\" l10 =\"%d\" l11 =\"%d\" l12 =\"%d\" l13 =\"%g\" l14 =\"%g\" />\n",
+	                  square[0],square[1],square[2],angleRelation,lsqlines[4],lsqlines[5],lsqlines[0],lsqlines[1], objects[0], objects[1], objects[2], objects[3], lsqlines[6],lsqlines[7]);
 
       //snprintf(reply, MRL, "<laser l1=\"%g\"
 
