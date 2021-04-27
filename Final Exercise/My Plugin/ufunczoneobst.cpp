@@ -96,12 +96,12 @@ double UFunczoneobst::dotProduct(double* x, double* y, int lengthX){
 
 
    }
-   
+
     const int MRL = 500;
     char reply[MRL];
     snprintf(reply, MRL, "<product=\"%g\" />\n",
                     product);
-  
+
 
   sendMsg(msg, reply);
 
@@ -123,14 +123,14 @@ void UFunczoneobst::lsqline(double* x, double* y, double* line, int lengthX){
   for (int i = 0; i < lengthX; i++){
     x_sum += x[i];
     y_sum += y[i];
-  }	
+  }
 
   snprintf(reply, MRL, "<lengthX=\"%d\" />\n",
                     lengthX);
-  
 
-  sendMsg(msg, reply);
-  
+
+  //sendMsg(msg, reply);
+
 
 
   double x_mean = x_sum/lengthX;
@@ -144,7 +144,8 @@ void UFunczoneobst::lsqline(double* x, double* y, double* line, int lengthX){
 
   if (line[1] < 0){
     line[1] = -line[1];
-
+  }
+/*
     if(line[0] < 0){
       line[0] += M_PI;
 
@@ -152,7 +153,14 @@ void UFunczoneobst::lsqline(double* x, double* y, double* line, int lengthX){
       line[0] -= M_PI;
     }
   }
-
+  if(line[0] > M_PI/2){
+    line[0] = M_PI/2-line[0];
+  }
+  else if(line[0] < -M_PI/2){
+    line[0] = M_PI/2+line[0];
+  }
+  */
+ //line[0] = M_PI/2-line[0];
 }
 
 //finds the startIndex, endIndex and cornerindex
@@ -167,14 +175,15 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
   Point anchor = Point( -1, -1 );
   double delta = 0;
   int ddepth = -1;
-  double line1[2], line2[2];
+  double line1[2] = {0, 0};
+  double line2[2] = {0, 0};
   double distDiff[501];
   int const nf = 501;
   int const ng = 25;
   int n = 5+501 -1;
 
   //Gaussian kernel
-  static const double kernel[5] = { 
+  static const double kernel[5] = {
 0.00135, 0.157305, 0.68269, 0.157305, 0.00135
     };
 
@@ -211,7 +220,7 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 	  //Take the derivative twice:
 	  int cornerIndex = startIndex+1;
 	  for (int i = startIndex; i <= endIndex; i++){
-	    
+
 	    //distDiff[i] = filterOut[i];
 	  	distDiff[i] = dist[i];
       //## ?? ##
@@ -272,20 +281,35 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 
 	  //Not to be confused with the length of the sides, this is just the array sizes
-	  int lengthX= sizeof(x1)/sizeof(x1[0]);
+    //DEBUG if number of points are too low, measurements are unreliable
+    int lengthX1= sizeof(x1)/sizeof(x1[0]);
+    snprintf(reply, MRL, "<length of x=\"%d\" />\n",
+            lengthX1);
+    sendMsg(msg, reply);
+
+    //Find lines with lsqline
+    if(lengthX1 > 5){
+	     lsqline(x1, y1, line1, lengthX1);
+     }
+     else{
+       line1[0] = 0;
+       line1[1] = 0;
+     }
+
+    //DEBUG if number of points are too low, measurements are unreliable
+    int lengthX2= sizeof(x2)/sizeof(x2[0]);
+    snprintf(reply, MRL, "<length of x2=\"%d\" />\n",
+            lengthX2);
+    sendMsg(msg, reply);
+    if (lengthX2> 5){
+	     lsqline(x2, y2, line2, lengthX2);
+     }
+     else{
+       line2[0] = 0;
+       line2[1] = 0;
+     }
 
 
-
-	  //Find lines with lsqline
-
-	  lsqline(x1, y1, line1, lengthX);
-
-	  lengthX= sizeof(x2)/sizeof(x2[0]);
-
-	
-	  lsqline(x2, y2, line2, lengthX);
-
-	  
 
 	  //lsqlines[0] = line1[0];
 	  //lsqlines[1] = line2[0];
@@ -303,8 +327,8 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
     	  //Determine the orientation of the object
 	  if (length1 > length2){
-	    square[2] = line1[0];
-	    
+	    square[2] = line2[0];
+
 	    lsqlines[0] = line1[0];
 	    lsqlines[2] = line1[1];
 
@@ -315,9 +339,9 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 
 	    boxWidth = length2;
 	  }else{
-	    square[2] = line2[0];
+	    square[2] = line1[0];
 	    boxWidth = length1;
-	
+
 	    lsqlines[0] = line2[0];
 	    lsqlines[2] = line2[1];
 
@@ -327,8 +351,12 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 	    lsqlines[5] = length1;
 
 	  }
-	  square[0] = (poseW[0][startIndex]+poseW[0][endIndex])/2;
+	  square[0] = (poseW[0][startIndex]+poseW[0][endIndex])/2 + 0.25; //Add the distance from the laser scanner to the robot wheels
 	  square[1] = (poseW[1][endIndex]+poseW[1][startIndex])/2;
+
+	  lsqlines[6] = poseW[0][cornerIndex] + 0.25; //Add the corner X coordinate to the output
+	  lsqlines[7] = poseW[1][cornerIndex]; //Add the corner Y coordinate to the output 
+	
   }
 }
 
@@ -358,11 +386,52 @@ void UFunczoneobst::parking(double* square, double* parkingCoordinate)
 
 }
 
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-// #define SMRWIDTH 0.4
+void UFunczoneobst::objectAnalysis(double angleRelation, double* lsqlines, int* objects)
+{ // objects contain the confidence in the 4 different objects.
+	if (lsqlines[5] >= 0.12 && lsqlines[5] <= 0.17)
+	{
+		objects[0] = objects[0] + 1;
+		objects[3] = objects[3] + 1;
+	}
+
+	else if (lsqlines[5] >= 0.17 && lsqlines[5] <= 0.22)
+	{
+		objects[1] = objects[1] + 1;
+	}
+	if (lsqlines[4] >= 0.36 && lsqlines[4] <= 0.40)
+	{
+		objects[0] = objects[0] + 1;
+		objects[2] = objects[2] + 1;
+	}
+	else if (lsqlines[4] >= 0.28 && lsqlines[4] <= 0.30)
+	{
+		objects[1] = objects[1] + 1;
+		objects[3] = objects[3] + 1;
+	}
+	else if (lsqlines[4] > 0.3 && lsqlines[4] <= 0.36)
+	{
+		objects[3] = objects[3] + 1;
+	}
+	else if (lsqlines[4] >= 0.39 && lsqlines[4] <= 0.42)
+	{
+		objects[2] = objects[2] + 1;
+	}
+	/*if (angleRelation < 1)
+	{
+		objects[2] = objects[2] + 1;
+		objects[3] = objects[3] + 1;
+	}
+	else
+	{
+		objects[0] = objects[0] + 1;
+		objects[1] = objects[1] + 1;
+	}*/
+
+
+}
+
+
+
 bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 {  // handle a plugin command
 
@@ -372,7 +441,8 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
   double poseW[3][501];
   double carthCoord[2][501], carthPoint[2][501];
   double square[3];
-  double lsqlines[6];
+  double lsqlines[8];
+  int objects[4] = {0, 0, 0, 0};
   double parkingCoordinate[3];
   //Apparently defining an array like this: double* theta[501]{} - doesnt work. It results in the segmentation fault
 
@@ -460,17 +530,24 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
       //squareDetect(theta, r, carthCoord, minRange, square, lsqlines);
 
       angleRelation = abs(lsqlines[1]-lsqlines[0]);
-      if (angleRelation < 0.2){
+      if (lsqlines[5] < 0.02 || angleRelation < 0.2){
 	 lsqlines[4] = lsqlines[4] + lsqlines[5];
 	 lsqlines[5] = 0;
 
-      }
+     }
+     /*if (angleRelation > M_PI/2){
+       angleRelation = M_PI/2-angleRelation;
+     }
+     else if(angleRelation < -M_PI/2){
+       angleRelation = angleRelation + M_PI/2;
+     }*/
+	 objectAnalysis(angleRelation, lsqlines, objects);
 
 
       //parking(square,parkingCoordinate);
 
-      snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" \n l4=\"%g\" l5=\"%g\" l6=\"%g\" l7 =\"%g\" l8 =\"%g\"  />\n",
-	                  square[0],square[1],square[2],angleRelation,lsqlines[4],lsqlines[5],lsqlines[0],lsqlines[1]);
+      snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" \n l4=\"%g\" l5=\"%g\" l6=\"%g\" l7 =\"%g\" l8 =\"%g\" l9 =\"%d\" l10 =\"%d\" l11 =\"%d\" l12 =\"%d\" l13 =\"%g\" l14 =\"%g\" />\n",
+	                  square[0],square[1],square[2],angleRelation,lsqlines[4],lsqlines[5],lsqlines[0],lsqlines[1], objects[0], objects[1], objects[2], objects[3], lsqlines[6],lsqlines[7]);
 
       //snprintf(reply, MRL, "<laser l1=\"%g\"
 
