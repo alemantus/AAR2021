@@ -1,25 +1,70 @@
 %Make something that goes to the start field with 45 degrees angle first.
 
-
-%Find the box. $l1 is x, $l2 is y, and $l3 is theta, $l4 is the angle of the corner, $l5 is the length of the longest
-%observed line, $l6 is the length of the shortest observed line, $l7 is the relative angle to the longest observed
-%line, $l8 is the relative angle of the shortest observed line.
+startoffset = 0.2
 
 
-laser "scanpush cmd = 'zoneobst' "
-wait 1
-log "$l1" "$l2" "$l3"
+%Find the box. $l9 is x, $l10 is y, and $l11 is theta, $l12 is the angle of the corner, $l15 is the length of the longest
+%observed line, $l9 is the length of the shortest observed line, $l17 is the relative angle to the longest observed
+%line, $l18 is the relative angle of the shortest observed line.
+
+turn 90 @v0.5
+fwd 0.25
+
+turn -90 @v0.5
+
+drive @v0.5 :($irdistleft < 0.88 | $irdistfrontmiddle < 0.7)
+
+stop
+ 
+if ($irdistleft < 0.88 ) "objectfound"
+
+turn 90
+fwd 0.6
+turn -90
+
+drive @v-0.5 :($irdistleft < 0.88)
+
+fwd -0.26
+goto "objectfound"
+
+
+
+label "objectfound"
+
+fwd 0.26
+
+
+
+turn 90
+
+drive @v0.5 :($irdistfrontmiddle < 0.3)
+
+stop
+
+%goto "stop"
+
+
+
+%laser "scanpush cmd = 'zoneobst' "
+%wait 1
+log "$l9" "$l10" "$l11"
 
 %Final pose
-X = $l1
-Y = $l2
-theta = $l3
 
-X = X - 0.5
+finalX = 0
+finalY = 0
+finalTheta = 0
+
+%X = $l9
+%Y = $l10
+%theta = $l11
+
+%X = X - 0.5
 %Y = Y - 0.5
+%eval X; Y; theta
 
-drive X Y theta : ($targetdist < 0.25)
-stop
+%drive X Y theta : ($targetdist < 0.25)
+%stop
 
 
 
@@ -36,26 +81,25 @@ label "zoning"
 laser "scanpush cmd = 'zoneobst' "
 wait 1
 
-X = $l1
-Y = $l2
-theta = $l3
+X = $l9
+Y = $l10
+theta = $l11
 
 
-%log "$l1" "$l2" "$l3" "$l4" "$l5" "$l6" "$l7" "$l8" "$l9" "$l10" "$l11" "$l12"
 log "$odox" "$odoy" "$odoth"
 %Final pose
-%X = $l1
-%Y = $l2
-%theta = $l3
-%cornerAngle = $l4
-%longestLength = $l5
-%shortestLength = $l6
-%longestAngle = $l7
-%shortestAngle = $l8
-object1 = $l9
-object2 = $l10
-object3 = $l11
-object4 = $l12
+%X = $l9
+%Y = $l10
+%theta = $l11
+%cornerAngle = $l12
+%longestLength = $l105
+%shortestLength = $l106
+%longestAngle = $l107
+%shortestAngle = $l108
+object1 = $l13
+object2 = $l14
+object3 = $l15
+object4 = $l16
 
 
 sum1 = sum1 + object1
@@ -73,7 +117,7 @@ i = i + 1
 if (i > 4) "finish" %Break out of the loop when we have seen 4 sides
 
 turn -90
-followwall "l" 0.5 :($drivendist > 0.9)
+followwall "l" 0.3 :($drivendist > 0.9)
 stop
 turn 90
 
@@ -90,10 +134,10 @@ if ((sum3 > sum1) & (sum3 > sum2) & (sum3 > sum4)) "Object3"
 if ((sum4 > sum1) & (sum4 > sum3) & (sum4 > sum1)) "Object4"
 
 
-
-followwall "l" 0.5 :($drivendist > 0.3)
+turn -90
+followwall "l" 0.3 :($drivendist > 0.3)
 stop
-
+turn 90
 
 goto "zoning"
 
@@ -108,48 +152,38 @@ label "Object1"
 
 laser "scanpush cmd = 'zoneobst' "
 wait 1
-X = $l1
-Y = $l2
-theta = $l3
-
-
+X = $l9
+Y = $l10
+theta = $l11
 object = 1
-eval 1
-
-
 eval X; Y; theta
 
-trans $odox $odoy $odoth X Y theta
-deltaX = $res0
-deltaY = $res1
-deltaTheta = $res2
-eval deltaX; deltaY; deltaTheta
+odox=$odox+startoffset
+odoy=$odoy+startoffset
+trans odox odoy $odoth X Y theta
+finalX = $res0
+finalY = $res1
+finalTheta = $res2
 
 
 goto "stop"
 
 label "Object2"
 %Print out "The object is object 2"
-
-
 laser "scanpush cmd = 'zoneobst' "
 wait 1
-
-X = $l1
-Y = $l2
-theta = $l3
-
+X = $l9
+Y = $l10
+theta = $l11
 eval X; Y; theta
 eval $odox; $odoy; $odoth
-
 object = 2
-eval 2
-
-trans $odox $odoy $odoth X Y theta
-deltaX = $res0
-deltaY = $res1
-deltaTheta = $res2
-eval deltaX; deltaY; deltaTheta
+odox=$odox+startoffset
+odoy=$odoy+0.2
+trans odox odoy $odoth X Y theta
+finalX = $res0
+finalY = $res1
+finalTheta = $res2
 
 goto "stop"
 
@@ -158,9 +192,6 @@ goto "stop"
 label "Object3"
 %Print out "The object is object 3"
 object = 3
-
-eval 3
-
 goto "Triangulation"
 
 
@@ -168,8 +199,6 @@ goto "Triangulation"
 label "Object4"
 %Print out "The object is object 4"
 object = 4
-
-eval 4
 goto "Triangulation"
 
 
@@ -180,13 +209,13 @@ label "Triangulation"
 laser "scanpush cmd = 'zoneobst' "
 wait 1
 
-X = $l1
-Y = $l2
-theta = $l3
-cornerAngle = $l4
+X = $l9
+Y = $l10
+theta = $l11
+cornerAngle = $l12
 
-cornerX = $l13
-cornerY = $l14
+cornerX = $l17
+cornerY = $l18
 
 eval cornerAngle
 
@@ -198,7 +227,7 @@ i = i + 1
 
 
 turn -90
-followwall "l" 0.5 :($drivendist > 0.6)
+followwall "l" 0.3 :($drivendist > 0.6)
 stop
 turn 90
 
@@ -207,12 +236,36 @@ goto "Triangulation"
 
 
 label "finish2"
-trans $odox $odoy $odoth cornerX cornerY theta
-deltaX = $res0
-deltaY = $res1
-deltaTheta = $res2
-eval deltaX; deltaY; deltaTheta
+odox=$odox+startoffset
+odoy=$odoy+startoffset
+trans odox odoy $odoth cornerX cornerY theta
+finalX = $res0
+finalY = $res1
+finalTheta = $res2
+
+goto "stop"
+
+
 
 
 label "stop"
+turn 90
+followwall "r" 0.3 :($odoth > 3)
 stop
+
+
+
+
+
+drivew 0.2 0.2 3.14 "rad" :($irdistfrontmiddle < 0.2)
+stop
+turn -135
+fwd -0.2
+turn 45
+
+stop
+
+
+
+
+
