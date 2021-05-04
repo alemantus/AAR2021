@@ -1,0 +1,4 @@
+Vores vinkeldedektion er fucked når en af siderne er 0. 
+Der sker noget underligt med theta nogle gange.
+
+Kobl objectdetection sammen med project - til sidst. 
