@@ -1,0 +1,385 @@
+%Program for final project
+
+%Initialize the localizer
+laser "push t='0.1' cmd='localize'"
+wait 1
+
+%Initialize the planner and add points and connections
+laser "resetplanner"
+
+%Goal points 
+laser "addpoint pno=1 x=-0.25 y=1.5"
+laser "addpoint pno=2 x=0.25 y=1.5"
+laser "addpoint pno=3 x=3.75 y=1.5"
+laser "addpoint pno=4 x=4.25 y=1.5"
+laser "addpoint pno=5 x=-0.25 y=3.5"
+laser "addpoint pno=6 x=0.25 y=3.5"
+laser "addpoint pno=7 x=3.75 y=3.5"
+laser "addpoint pno=8 x=4.25 y=3.5"
+laser "addpoint pno=9 x=0.25 y=4.5"
+laser "addpoint pno=10 x=3.75 y=4.5"
+laser "addpoint pno=11 x=0.5 y=4.7"
+laser "addpoint pno=12 x=3.5 y=4.7"
+laser "addpoint pno=13 x=1.75 y=4.0"
+laser "addpoint pno=14 x=2.25 y=4.0"
+laser "addpoint pno=15 x=-0.25 y=2.5"
+laser "addpoint pno=16 x=0.25 y=2.5"
+laser "addpoint pno=17 x=3.75 y=2.5"
+laser "addpoint pno=18 x=4.25 y=2.5"
+laser "addpoint pno=19 x=0.25 y=0.25"
+laser "addpoint pno=20 x=3.75 y=0.25"
+laser "addpoint pno=21 x=0.25 y=2.25"
+laser "addpoint pno=22 x=2.0 y=2.25"
+laser "addpoint pno=23 x=3.75 y=2.25"
+laser "addpoint pno=24 x=1.25 y=3.3"
+laser "addpoint pno=25 x=2.0 y=3.3"
+laser "addpoint pno=26 x=2.75 y=3.3"
+laser "addpoint pno=27 x=1.25 y=4.1"
+laser "addpoint pno=28 x=2.75 y=4.1"
+
+
+laser "addcon pno1=19 pno2=2"
+laser "addcon pno1=2 pno2=19"
+laser "addcon pno1=2 pno2=21"
+laser "addcon pno1=21 pno2=2"
+laser "addcon pno1=21 pno2=16"
+laser "addcon pno1=16 pno2=21"
+laser "addcon pno1=16 pno2=15"
+laser "addcon pno1=15 pno2=16"
+laser "addcon pno1=16 pno2=6"
+laser "addcon pno1=6 pno2=16"
+laser "addcon pno1=15 pno2=5"
+laser "addcon pno1=5 pno2=15"
+laser "addcon pno1=15 pno2=1"
+laser "addcon pno1=1 pno2=15"
+laser "addcon pno1=6 pno2=9"
+laser "addcon pno1=9 pno2=6"
+laser "addcon pno1=9 pno2=11"
+laser "addcon pno1=11 pno2=9"
+laser "addcon pno1=11 pno2=12"
+laser "addcon pno1=12 pno2=11"
+laser "addcon pno1=12 pno2=10"
+laser "addcon pno1=10 pno2=12"
+laser "addcon pno1=10 pno2=7"
+laser "addcon pno1=7 pno2=10"
+laser "addcon pno1=7 pno2=17"
+laser "addcon pno1=17 pno2=7"
+laser "addcon pno1=17 pno2=18"
+laser "addcon pno1=18 pno2=17"
+laser "addcon pno1=18 pno2=8"
+laser "addcon pno1=8 pno2=18"
+laser "addcon pno1=18 pno2=4"
+laser "addcon pno1=4 pno2=18"
+laser "addcon pno1=17 pno2=23"
+laser "addcon pno1=23 pno2=17"
+laser "addcon pno1=23 pno2=20"
+laser "addcon pno1=20 pno2=23"
+laser "addcon pno1=23 pno2=22"
+laser "addcon pno1=22 pno2=23"
+laser "addcon pno1=22 pno2=21"
+laser "addcon pno1=21 pno2=22"
+laser "addcon pno1=22 pno2=25"
+laser "addcon pno1=25 pno2=22"
+laser "addcon pno1=25 pno2=24"
+laser "addcon pno1=24 pno2=25"
+laser "addcon pno1=24 pno2=27"
+laser "addcon pno1=27 pno2=24"
+laser "addcon pno1=27 pno2=13"
+laser "addcon pno1=13 pno2=27"
+laser "addcon pno1=25 pno2=26"
+laser "addcon pno1=26 pno2=25"
+laser "addcon pno1=26 pno2=28"
+laser "addcon pno1=28 pno2=26"
+laser "addcon pno1=28 pno2=14"
+laser "addcon pno1=14 pno2=28"
+laser "addcon pno1=20 pno2=19"
+laser "addcon pno1=19 pno2=20"
+laser "addcon pno1=3 pno2=23"
+laser "addcon pno1=23 pno2=3"
+laser "addcon pno1=3 pno2=20"
+laser "addcon pno1=20 pno2=3"
+
+
+laser "calculatecost"
+
+%Define guidemarks:
+array "gmx" 15
+array "gmy" 15
+array "gmth" 15
+pi=3.1416
+gmx[1]=-0.25
+gmx[2]=0.25
+gmx[3]=3.75
+gmx[4]=4.25
+gmx[5]=-0.25
+gmx[6]=0.25
+gmx[7]=3.75
+gmx[8]=4.25
+gmx[9]=0.25
+gmx[10]=4.25
+gmx[11]=0.5
+gmx[12]=3.5
+gmx[13]=1.75
+gmx[14]=2.25
+
+gmy[1]=1.5
+gmy[2]=1.5
+gmy[3]=1.5
+gmy[4]=1.5
+gmy[5]=3.5
+gmy[6]=3.5
+gmy[7]=3.5
+gmy[8]=3.5
+gmy[9]=4.6
+gmy[10]=4.6
+gmy[11]=4.75
+gmy[12]=4.75
+gmy[13]=4.0
+gmy[14]=4.0
+
+gmth[1]=pi/2
+gmth[2]=pi/2
+gmth[3]=pi/2
+gmth[4]=pi/2
+gmth[5]=pi/2
+gmth[6]=pi/2
+gmth[7]=pi/2
+gmth[8]=pi/2
+gmth[9]=pi/2
+gmth[10]=pi/2
+gmth[11]=0
+gmth[12]=0
+gmth[13]=0
+gmth[14]=0
+
+
+%The order is:
+% 2, 7, 11, 3, 6, 12, 13
+
+num = $fiducialid
+
+%Starting program 1
+stringcat "findroute startx=0.2 starty=0.2 endx=0.25 endy=1.5"
+laser "$string"
+wait 0.5
+eval $l4
+point = $l4
+label "start"
+wait 0.5
+stringcat "getpoint p= " point
+laser "$string"
+wait 0.5
+eval $l5
+eval $l6
+eval $l7
+drivew $l5 $l6 $l7 "rad" : ($targetdist < 0.5)
+point = point - 1
+if(point >= 0) "start"
+stop
+
+
+%num = $fiducialid
+eval num
+xOld = 0.25
+yOld = 1.5
+xNew = gmx[num]
+yNew = gmy[num]
+eval xNew
+eval yNew
+
+wait 1
+
+
+%Starting program 2
+stringcat "findroute startx="xOld" starty="yOld" endx="xNew" endy="yNew
+laser "$string"
+wait 1
+eval $l4
+point = $l4
+label "start2"
+wait 0.5
+stringcat "getpoint p= " point
+laser "$string"
+wait 0.5
+eval $l5
+eval $l6
+eval $l7
+drivew $l5 $l6 $l7 "rad" : ($targetdist < 0.5)
+point = point - 1
+if(point >= 0) "start2"
+stop
+
+num = $fiducialid
+eval num
+xOld = xNew
+yOld = yNew
+xNew = gmx[num]
+yNew = gmy[num]
+eval xNew
+eval yNew
+
+%Starting program 3
+stringcat "findroute startx="xOld" starty="yOld" endx="xNew" endy="yNew
+laser "$string"
+wait 0.5
+eval $l4
+point = $l4
+label "start3"
+wait 0.5
+stringcat "getpoint p= " point
+laser "$string"
+wait 0.5
+eval $l5
+eval $l6
+eval $l7
+drivew $l5 $l6 $l7 "rad" : ($targetdist < 0.5)
+point = point - 1
+if(point >= 0) "start3"
+stop
+
+num = $fiducialid
+eval num
+xOld = xNew
+yOld = yNew
+xNew = gmx[num]
+yNew = gmy[num]
+eval xNew
+eval yNew
+
+%Starting program 4
+stringcat "findroute startx="xOld" starty="yOld" endx="xNew" endy="yNew
+laser "$string"
+wait 0.5
+eval $l4
+point = $l4
+label "start4"
+wait 0.5
+stringcat "getpoint p= " point
+laser "$string"
+wait 0.5
+eval $l5
+eval $l6
+eval $l7
+drivew $l5 $l6 $l7 "rad" : ($targetdist < 0.5)
+point = point - 1
+if(point >= 0) "start4"
+
+num = $fiducialid
+eval num
+xOld = xNew
+yOld = yNew
+xNew = gmx[num]
+yNew = gmy[num]
+eval xNew
+eval yNew
+
+
+%Starting program 5
+stringcat "findroute startx="xOld" starty="yOld" endx="xNew" endy="yNew
+laser "$string"
+wait 0.5
+eval $l4
+point = $l4
+label "start5"
+wait 0.5
+stringcat "getpoint p= " point
+laser "$string"
+wait 0.5
+eval $l5
+eval $l6
+eval $l7
+drivew $l5 $l6 $l7 "rad" : ($targetdist < 0.5)
+point = point - 1
+if(point >= 0) "start5"
+
+num = $fiducialid
+eval num
+xOld = xNew
+yOld = yNew
+xNew = gmx[num]
+yNew = gmy[num]
+eval xNew
+eval yNew
+
+
+%Starting program 6
+stringcat "findroute startx="xOld" starty="yOld" endx="xNew" endy="yNew
+laser "$string"
+wait 0.5
+eval $l4
+point = $l4
+label "start6"
+wait 0.5
+stringcat "getpoint p= " point
+laser "$string"
+wait 0.5
+eval $l5
+eval $l6
+eval $l7
+drivew $l5 $l6 $l7 "rad" : ($targetdist < 0.5)
+point = point - 1
+if(point >= 0) "start6"
+
+num = $fiducialid
+eval num
+xOld = xNew
+yOld = yNew
+xNew = gmx[num]
+yNew = gmy[num]
+eval xNew
+eval yNew
+
+
+%Starting program 7
+stringcat "findroute startx="xOld" starty="yOld" endx="xNew" endy="yNew
+laser "$string"
+wait 0.5
+eval $l4
+point = $l4
+label "start7"
+wait 0.5
+stringcat "getpoint p= " point
+laser "$string"
+wait 0.5
+eval $l5
+eval $l6
+eval $l7
+drivew $l5 $l6 $l7 "rad" : ($targetdist < 0.5)
+point = point - 1
+if(point >= 0) "start7"
+
+num = $fiducialid
+eval num
+xOld = xNew
+yOld = yNew
+xNew = 0.2
+yNew = 0.2
+eval xNew
+eval yNew
+
+
+%Starting program 8
+stringcat "findroute startx="xOld" starty="yOld" endx="xNew" endy="yNew
+laser "$string"
+wait 0.5
+eval $l4
+point = $l4
+label "start8"
+wait 0.5
+stringcat "getpoint p= " point
+laser "$string"
+wait 0.5
+eval $l5
+eval $l6
+eval $l7
+drivew $l5 $l6 $l7 "rad" : ($targetdist < 0.5)
+point = point - 1
+if(point >= 0) "start8"
+
+fwd 0.3
+turn 180
+
+stop
+
+
+

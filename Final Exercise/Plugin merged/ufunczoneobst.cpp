@@ -349,7 +349,6 @@ void UFunczoneobst::squareDetect(double theta[501], double dist[501], double pos
 	    lsqlines[3] = line1[1];
 	    lsqlines[4] = length2;
 	    lsqlines[5] = length1;
-
 	  }
 	  square[0] = (poseW[0][startIndex]+poseW[0][endIndex])/2 + 0.25; //Add the distance from the laser scanner to the robot wheels
 	  square[1] = (poseW[1][endIndex]+poseW[1][startIndex])/2;
@@ -459,11 +458,12 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
   double alpha;
   double tmp;
   double angleRelation;
+  double r2;
   //
   int i,j,imax;
   double r[501];
   double delta;
-  double minRange = 10; // min range in meter
+  double minRange = 1000; // min range in meter
   for (j=0;j<501;j++) r[j]=minRange;
 
   double zone[9];
@@ -525,7 +525,7 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
       }
       pol2carth(theta, r, carthCoord);
 
-      squareDetect(theta, r, carthCoord, minRange, square, lsqlines);
+      squareDetect(theta, r, carthCoord, 1, square, lsqlines); //Manually changed the distance at which we detect objects to 0.5 m
       //squareDetect(theta, r, carthCoord, minRange, square, lsqlines);
       //squareDetect(theta, r, carthCoord, minRange, square, lsqlines);
 
@@ -535,6 +535,22 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 	 lsqlines[5] = 0;
 
      }
+
+
+    delta=imax/9.0;
+      for (j=0;j<9;j++)
+        zone[j]=minRange;
+      for(j=0;j<9;j++){
+        for (i = 0+(int)(j*delta); i < (int)((j+1)*delta); i++){ // range are stored as an integer in current units
+          r2 = data->getRangeMeter(i);
+          if (r2 >= 0.020){ // less than 20 units is a flag value for URG scanner
+            if (r2<zone[j]){
+              zone[j]=r2;
+            }
+        }
+      }
+    }
+
      /*if (angleRelation > M_PI/2){
        angleRelation = M_PI/2-angleRelation;
      }
@@ -546,11 +562,21 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 
       //parking(square,parkingCoordinate);
 
-      snprintf(reply, MRL, "<laser l1=\"%g\" l2=\"%g\" l3=\"%g\" \n l4=\"%g\" l5=\"%g\" l6=\"%g\" l7 =\"%g\" l8 =\"%g\" l9 =\"%d\" l10 =\"%d\" l11 =\"%d\" l12 =\"%d\" l13 =\"%g\" l14 =\"%g\" />\n",
-	                  square[0],square[1],square[2],angleRelation,lsqlines[4],lsqlines[5],lsqlines[0],lsqlines[1], objects[0], objects[1], objects[2], objects[3], lsqlines[6],lsqlines[7]);
+      snprintf(reply, MRL, "<laser l9=\"%g\" l10=\"%g\" l11=\"%g\" l12=\"%g\" l13=\"%d\" l14=\"%d\" l15 =\"%d\" l16 =\"%d\" l17 =\"%g\" l18 =\"%g\" />\n",
+	                  square[0],square[1],square[2],angleRelation, objects[0], objects[1], objects[2], objects[3], lsqlines[6],lsqlines[7]);
 
       //snprintf(reply, MRL, "<laser l1=\"%g\"
 
+      sendMsg(msg, reply);
+
+            /* SMRCL reply format */
+      //snprintf(reply, MRL, "<laser l10=\"%g\" l11=\"%g\" l9=\"%g\" l13=\"%g\" l14=\"%g\" "
+      //                            "l15=\"%g\" l9=\"%g\" l17=\"%g\" l18=\"%g\" />\n", 
+      snprintf(reply, MRL, "<laser l0=\"%g\" l1=\"%g\" l2=\"%g\" l3=\"%g\" l4=\"%g\" "
+                                  "l5=\"%g\" l6=\"%g\" l7=\"%g\" l8=\"%g\" />\n", 
+                    zone[0],zone[1],zone[2],zone[3],zone[4],
+                           zone[5],zone[6],zone[7],zone[8]);
+      // send this string as the reply to the client
       sendMsg(msg, reply);
     }
     else

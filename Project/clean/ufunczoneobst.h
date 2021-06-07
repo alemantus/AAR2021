@@ -43,25 +43,16 @@ public:
   UFunczoneobst()
   { // set the command (or commands) handled by this plugin
     setCommand("zoneobst", "zoneobstif", "obstacle detect for MRC (Compiled " __DATE__ " " __TIME__ ")");
-
     createBaseVar();
   }
   virtual bool setResource(UResBase * resource, bool remove);
-  void transform(double carth[][501], double x, double y, double a, double poseW[][501]);
-  void pol2carth(double* theta, double* dist, double carth[][501]);
-  void squareDetect(double theta[501], double dist[501], double poseW[][501], int minRange, double* square, double* lsqlines);
-  double dotProduct(double* x, double* y, int lengthX);
-  void lsqline(double *x, double *y, double* line, int lengthX);
-  void parking(double* square, double* parking);
-  void objectAnalysis(double angleRelation, double* lsqlines, int* objects);
   /**
   Handle incomming command
   (intended for command separation)
   Must return true if the function is handled -
   otherwise the client will get a failed - reply */
   virtual bool handleCommand(UServerInMsg * msg, void * extra);
-
-
+  
   protected:
     void createBaseVar();
     UVariable *var_zone;
@@ -71,3 +62,4 @@ public:
 
 
 #endif
+
